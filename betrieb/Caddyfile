@@ -1,0 +1,22 @@
+# Caddy holt und erneuert das HTTPS-Zertifikat für die Domain von selbst.
+{$DOMAIN} {
+	encode gzip
+
+	# Nur HTTPS, auch beim nächsten Besuch
+	header Strict-Transport-Security "max-age=31536000"
+
+	# Von den technischen Seiten ist nur der Gesundheits-Check von außen erreichbar
+	# (den braucht der Uptime-Dienst für den Alarm)
+	@technik {
+		path /actuator/*
+		not path /actuator/health
+	}
+	respond @technik 404
+
+	reverse_proxy app:8080
+
+	# Keine Adressen der Besucher im Zugriffsprotokoll
+	log {
+		output discard
+	}
+}

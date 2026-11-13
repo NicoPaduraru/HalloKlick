@@ -1,0 +1,105 @@
+# BEISPIEL-TESTSAMMLUNG: 50 Betrugsnachrichten.
+# Diese Nachrichten sind selbst geschrieben, nach dem Muster bekannter Betrugsmaschen.
+# Sie sind ein Platzhalter, bis echte Nachrichten gesammelt sind (z. B. aus Warnungen der
+# Verbraucherzentrale). Alle Adressen und Nummern sind erfunden.
+# Eine Nachricht pro Block, Blöcke sind durch eine Zeile mit --- getrennt.
+---
+Sparkasse: Ihr Konto wurde aus Sicherheitsgründen gesperrt. Bitte bestätigen Sie Ihre Daten sofort unter https://sparkasse-sicherheit.info/login
+---
+Ihr Paket konnte nicht zugestellt werden. Bitte zahlen Sie die Zollgebühr von 2,99 EUR: https://dhl-paketverfolgung.top/zahlung
+---
+Hallo Mama, mein Handy ist kaputt. Das ist meine neue Nummer. Kannst du mir bitte auf WhatsApp schreiben?
+---
+Hallo Papa, ich habe eine neue Handynummer, die alte kannst du löschen. Ich muss heute noch eine Rechnung bezahlen, kannst du mir 1.850 Euro überweisen? Ich gebe es dir morgen zurück.
+---
+Finanzamt: Sie erhalten eine Steuerrückerstattung von 412,50 EUR. Bitte bestätigen Sie Ihre Bankverbindung unter http://elster-erstattung.online/formular
+---
+PayPal: Wir haben ungewöhnliche Aktivitäten festgestellt. Ihr Konto ist eingeschränkt. Verifizieren Sie sich innerhalb von 24 Stunden: bit.ly/3xPaYp
+---
+Herzlichen Glückwunsch! Sie haben ein iPhone 16 gewonnen. Fordern Sie Ihren Gewinn jetzt an: www.gewinn-zentrale.click/iphone
+---
+Amazon: Ihr Konto wurde gesperrt. Bitte aktualisieren Sie Ihre Zahlungsdaten: amazon-kundenservice.support/konto
+---
+Volksbank Hinweis: Ihre SecureGo plus Registrierung läuft heute ab. Erneuern Sie diese jetzt unter https://vr-securego-aktualisierung.com
+---
+DHL: Ihre Sendung wird zurückgehalten. Bestätigen Sie Ihre Lieferadresse: http://185.234.72.15/dhl
+---
+Guten Tag, hier ist Ihre Bank. Wir müssen Ihr Konto überprüfen. Bitte nennen Sie uns Ihre PIN und die TAN aus der SMS.
+---
+Microsoft Sicherheitswarnung: Ihr Computer ist infiziert! Rufen Sie sofort den Support an: 0800 1234567
+---
+Mama, ich bins. Handy ins Wasser gefallen, schreibe von der Nummer einer Freundin. Kannst du mir schnell 980 Euro vorstrecken? Ist dringend!
+---
+Letzte Mahnung: Ihre Rechnung über 89,90 EUR ist offen. Zahlen Sie sofort, sonst übergeben wir an ein Inkassobüro: https://zahlung-portal.xyz/rechnung
+---
+Netflix: Ihre Mitgliedschaft wurde ausgesetzt, weil Ihre Zahlung fehlgeschlagen ist. Aktualisieren Sie Ihre Zahlungsinformationen: netflix-abo-hilfe.com
+---
+Polizei / Europol: Gegen Sie liegt ein Haftbefehl vor. Um die Festnahme zu vermeiden, zahlen Sie sofort 2.000 Euro. Rufen Sie an unter +49 30 12345678.
+---
+Hallo, ich bin Anna von der Personalabteilung. Wir bieten einen Nebenjob von zu Hause, 150-400 € pro Tag. Bei Interesse schreiben Sie uns auf WhatsApp: wa.me/4915100000000
+---
+Ihre Apple-ID wurde gesperrt. Melden Sie sich hier an, um sie zu entsperren: https://apple-id-sicherheit.net/login
+---
+Ich habe Ihre Webcam gehackt und Sie aufgenommen. Zahlen Sie 900 Euro in Bitcoin an folgende Wallet, sonst veröffentliche ich das Video.
+---
+Sie haben eine Erbschaft von 4,5 Millionen Euro erhalten. Bitte senden Sie uns Ihre Daten und eine Ausweiskopie, damit wir die Auszahlung vorbereiten können.
+---
+Postbank: Ihr BestSign Verfahren läuft ab. Um Ihr Konto weiter nutzen zu können, aktualisieren Sie Ihre Daten hier: http://postbank-bestsign.info
+---
+Zoll: Ihr Paket aus dem Ausland wird angehalten. Bitte begleichen Sie die Einfuhrabgaben von 4,75 Euro über diesen Link: zoll-sendung.cc/bezahlen
+---
+Hallo Oma, ich bin es. Ich habe eine neue Nummer, bitte speicher dir diese Nummer ein.
+---
+ING: Wir haben eine verdächtige Anmeldung festgestellt. Bestätigen Sie Ihre Identität, sonst wird Ihr Zugang gesperrt: https://ing-sicherheit-check.com
+---
+Guten Tag, Ihr Konto wird in 24 Stunden deaktiviert. Bitte geben Sie zur Bestätigung Ihr Passwort und Ihre Kartennummer ein: kunden-verifizierung.ru
+---
+Ihr Sohn hatte einen schweren Unfall. Um eine Haft zu vermeiden, muss sofort eine Kaution gezahlt werden. Rufen Sie umgehend an: 0171 2345678
+---
+Telekom: Ihre Rechnung konnte nicht abgebucht werden. Ihr Anschluss wird gesperrt. Jetzt Zahlungsdaten aktualisieren: telekom-rechnung-online.de/login
+---
+Hermes: Zustellung fehlgeschlagen. Neue Zustellung planen und 1,95 € Gebühr bezahlen: https://hermes-zustellung.link/neu
+---
+Liebe Kundin, lieber Kunde, Ihre pushTAN-Verbindung läuft ab. Bitte neu registrieren unter tinyurl.com/sparkasse-pushtan
+---
+Kannst du mir einen Gefallen tun? Ich brauche dringend Google Play Karten im Wert von 300 Euro. Bitte kaufen und mir die Codes als Foto schicken.
+---
+Sehr geehrter Kunde, wegen einer neuen EU-Richtlinie müssen Sie Ihr Konto verifizieren. Ohne Bestätigung wird Ihr Konto gesperrt. Hier bestätigen: https://commerzbank.kunden-verifizierung.com
+---
+Ihr Speicherplatz ist voll! Ihre Fotos werden heute gelöscht. Jetzt 50 GB gratis sichern: icloud-speicher.top
+---
+Bundeszentralamt für Steuern: Sie haben eine offene Steuerschuld. Bei Nichtzahlung erfolgt die Pfändung. Zahlen Sie sofort unter https://bzst-zahlung.online
+---
+Hallo, hier ist der technische Support. Wir haben Viren auf Ihrem Gerät gefunden. Bitte installieren Sie AnyDesk, damit wir Ihnen helfen können.
+---
+GLS: Ihr Paket wartet auf Sie. Bitte bestätigen Sie die Zustellung und zahlen Sie 2,50 EUR Nachgebühr: https://gls-paket.cfd/zahlung
+---
+Verdienen Sie täglich 500 Euro mit Krypto-Trading! Garantierte Rendite. Jetzt anmelden und investieren: https://krypto-gewinne.live
+---
+Klarna: Ihre Zahlung ist überfällig. Letzte Mahnung vor Inkasso. Begleichen Sie den offenen Betrag von 149,00 € sofort: klarna-zahlung.info/offen
+---
+Mama ich habe mein Handy verloren, das ist jetzt meine Nummer. Kannst du für mich eine Überweisung machen? Mein Online-Banking geht auf dem neuen Handy noch nicht.
+---
+Ihr WhatsApp-Konto läuft ab. Bestätigen Sie Ihre Telefonnummer und senden Sie uns den Bestätigungscode, den Sie per SMS erhalten.
+---
+Sie wurden ausgewählt! Als treuer Kunde erhalten Sie eine Prämie von 500 Euro. Bitte zahlen Sie nur die Bearbeitungsgebühr von 9,90 Euro.
+---
+DKB: Aus Sicherheitsgründen wurde Ihre Karte gesperrt. Zur Reaktivierung melden Sie sich bitte an: http://dkb-kartenservice.com/reaktivierung
+---
+Guten Tag, ich bin Rechtsanwalt Dr. Meier. Ein Verwandter hat Ihnen 2,3 Millionen Dollar vererbt. Für die Überweisung benötigen wir vorab eine Gebühr von 350 Euro.
+---
+Deutsche Post: Ihre Sendung 00340434 konnte nicht zugestellt werden, weil Porto fehlt. Zahlen Sie 0,89 € Nachporto: deutschepost-sendung.shop
+---
+Achtung: Ihr Konto bei der Rentenversicherung muss aktualisiert werden. Sonst wird Ihre Rente nicht ausgezahlt. Aktualisieren Sie Ihre Daten: https://rentenversicherung-daten.site
+---
+Ihre Bestellung wird heute mit 549,00 EUR von Ihrem PayPal-Konto abgebucht. Wenn Sie das nicht waren, rufen Sie sofort an: 0800 7654321
+---
+Hallo Papa, mein Display ist kaputt, ich schreibe vom Handy eines Kollegen. Unter dieser Nummer erreichst du mich jetzt. Hast du kurz Zeit? Ich brauche deine Hilfe bei einer Zahlung.
+---
+Ihre Kreditkarte wurde vorübergehend gesperrt. Zur Freischaltung geben Sie bitte Ihre Kartennummer und den Sicherheitscode ein: visa-sicherheit.co/freischalten
+---
+Staatsanwaltschaft: Gegen Sie wurde Strafanzeige erstattet. Zur Einstellung des Verfahrens überweisen Sie umgehend 1.200 Euro. Kontaktieren Sie uns unter 030 98765432.
+---
+Laden Sie die neue Sicherheits-App Ihrer Bank herunter, sonst wird Ihr Konto gesperrt: http://bank-sicherheit-app.com/app.apk
+---
+Guten Tag, hier ist Europol. Ihre Identität wurde gestohlen. Um Ihr Geld zu schützen, überweisen Sie es sofort auf ein sicheres Konto. Unser Mitarbeiter nennt Ihnen die IBAN.

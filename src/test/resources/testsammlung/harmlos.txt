@@ -1,0 +1,104 @@
+# BEISPIEL-TESTSAMMLUNG: 50 harmlose Nachrichten.
+# Diese Nachrichten sind selbst geschrieben und ein Platzhalter, bis echte Nachrichten
+# gesammelt sind. Alle Namen, Adressen und Nummern sind erfunden.
+# Eine Nachricht pro Block, Blöcke sind durch eine Zeile mit --- getrennt.
+---
+Hallo Mama, wir kommen am Sonntag um 15 Uhr zum Kaffee. Soll ich Kuchen mitbringen?
+---
+Ihr DHL Paket wird heute zwischen 10 und 13 Uhr zugestellt. Sendungsverfolgung: https://www.dhl.de/de/privatkunden/pakete-empfangen/verfolgen.html
+---
+Erinnerung: Ihr Termin bei Dr. Schneider ist am Dienstag, 14.03. um 9:30 Uhr. Bitte bringen Sie Ihre Versichertenkarte mit.
+---
+Oma, schau mal, das Foto von Lenas Einschulung! Sie hat sich so gefreut.
+---
+Ihre TAN lautet 483920. Geben Sie diese TAN niemals an andere Personen weiter. Ihre Sparkasse
+---
+Guten Morgen! Der Seniorentreff findet diese Woche am Donnerstag statt, nicht am Mittwoch. Liebe Grüße, Inge
+---
+Ihr Rezept liegt in der Apotheke am Markt zur Abholung bereit. Wir haben bis 18:30 Uhr geöffnet.
+---
+Papa, kannst du mich bitte zurückrufen, wenn du Zeit hast? Nichts Schlimmes, ich wollte nur wegen Samstag fragen.
+---
+Die Stadtwerke lesen am 12. Mai die Wasserzähler ab. Bitte ermöglichen Sie den Zugang zum Zähler.
+---
+Danke für die schönen Blumen! Ich habe mich sehr gefreut. Bis bald, deine Schwester Hanne
+---
+Amazon: Ihre Bestellung wurde versandt und kommt voraussichtlich morgen an. Verfolgen Sie die Lieferung in der Amazon App oder unter https://www.amazon.de/meine-bestellungen
+---
+Hallo Opa, ich habe die Führerscheinprüfung bestanden!!! Ich komme am Wochenende vorbei und fahre dich zum Einkaufen.
+---
+Liebe Mitglieder, die Jahreshauptversammlung des Gartenvereins ist am 3. April um 19 Uhr im Vereinsheim.
+---
+Der Schornsteinfeger kommt am Freitag zwischen 8 und 12 Uhr. Bitte seien Sie zu Hause.
+---
+Mama, ich bin gut in München angekommen. Das Hotel ist schön. Ich rufe dich heute Abend an.
+---
+Ihr Paket liegt in der Packstation 142 für Sie bereit. Die Abholfrist beträgt 7 Tage. Ihre DHL
+---
+Frohe Ostern wünschen dir Peter und Familie! Wir denken an dich.
+---
+Ihr Telekom Datenvolumen ist zu 80 Prozent verbraucht. Informationen finden Sie in der MeinMagenta App.
+---
+Hallo Frau Becker, hier ist die Fußpflege. Ihr Termin am Montag muss leider ausfallen. Passt Ihnen auch Mittwoch um 10 Uhr?
+---
+Hast du das Rezept für den Apfelkuchen noch? Ich möchte ihn am Wochenende backen.
+---
+Die Müllabfuhr kommt wegen des Feiertags einen Tag später. Ihre Stadtverwaltung
+---
+Lieber Herr Wagner, Ihre Brille ist fertig und kann abgeholt werden. Optik Krause
+---
+Gute Besserung, liebe Tante Erika! Ich komme morgen vorbei und bringe dir Suppe.
+---
+Ihre Kartenzahlung über 23,40 EUR bei REWE wurde ausgeführt. Ihre Bank
+---
+Wir treffen uns morgen um 10 Uhr am Bahnhof. Vergiss deinen Schirm nicht, es soll regnen.
+---
+Hallo Mama, hier ist das Video vom Kindergeburtstag: https://www.youtube.com/watch?v=abc123
+---
+Ihr Zählerstand wurde erfolgreich übermittelt. Vielen Dank. Ihre Stadtwerke
+---
+Kannst du mir bitte das Buch mitbringen, das ich dir geliehen habe? Danke dir!
+---
+Der Chor probt diese Woche ausnahmsweise im Gemeindehaus. Beginn wie immer um 18 Uhr.
+---
+Ihre Bahnfahrt nach Hamburg: Abfahrt 9:42 Uhr von Gleis 7. Ihr Ticket finden Sie in der App DB Navigator.
+---
+Opa, danke für das Geburtstagsgeld! Ich habe mir davon neue Fußballschuhe gekauft.
+---
+Sehr geehrte Frau Schulz, Ihr Auto ist fertig. Sie können es ab 16 Uhr abholen. Autohaus Lang
+---
+Ich habe dir einen Amazon-Gutschein zum Geburtstag geschickt, er müsste in deinen E-Mails sein. Alles Liebe!
+---
+Morgen ist Wochenmarkt, soll ich dir Eier und Kartoffeln mitbringen?
+---
+Die Physiotherapie Müller erinnert an Ihren Termin morgen um 14 Uhr. Bitte bringen Sie ein Handtuch mit.
+---
+Hallo Papa, ich habe ein neues Handy, die Nummer bleibt aber gleich. Die Fotos schicke ich dir später.
+---
+Ihr Hermes Paket wurde beim Nachbarn Schmidt abgegeben.
+---
+Liebe Grüße aus dem Urlaub an der Ostsee! Das Wetter ist herrlich. Bis nächste Woche.
+---
+Ihre Krankenkasse informiert: Ihre neue Gesundheitskarte wird Ihnen in den nächsten Tagen per Post zugeschickt.
+---
+Kommst du heute Abend zum Kartenspielen? Wir fangen um 19 Uhr an.
+---
+Mama, ich habe dir gerade die 50 Euro für das Geschenk überwiesen. Danke fürs Auslegen!
+---
+Ihr Friseurtermin ist am Freitag um 11 Uhr bei Salon Gisela. Bei Verhinderung bitte anrufen unter 0711 123456.
+---
+Die Heizungsablesung findet am 20. Januar statt. Sollten Sie nicht zu Hause sein, hinterlegen Sie bitte den Schlüssel beim Nachbarn.
+---
+Hallo Helga, hast du Lust, am Samstag mit ins Theater zu kommen? Ich habe noch eine Karte übrig.
+---
+Ihre Online-Bestellung bei der Apotheke ist unterwegs. Sie erhalten das Paket morgen.
+---
+Vielen Dank für Ihre Spende an das Rote Kreuz. Die Spendenbescheinigung schicken wir Ihnen per Post.
+---
+Der Enkel hat heute sein erstes Tor geschossen! Ich schicke dir gleich ein Foto.
+---
+Guten Tag Herr Braun, Ihre Waschmaschine wird am Dienstag zwischen 8 und 12 Uhr geliefert. Ihr Elektromarkt
+---
+Ich stehe im Stau und komme etwa 20 Minuten später. Fangt ruhig schon ohne mich an.
+---
+Sparkasse: Ab dem 1. Juli gelten neue Öffnungszeiten in Ihrer Filiale. Wir sind Montag bis Freitag von 9 bis 16 Uhr für Sie da.

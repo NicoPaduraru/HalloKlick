@@ -1,0 +1,472 @@
+/*
+ * Regeln für die Bedienung (Bauplan, Abschnitt 10):
+ * - Schrift mindestens 20 px
+ * - Schaltflächen mindestens 48 x 48 px (hier 64 px hoch)
+ * - Kontrast mindestens 4,5 : 1 (WCAG 2.2 AA)
+ * - keine Wischgesten, keine versteckten Menüs
+ */
+:root {
+  --blau: #17437a;
+  --blau-dunkel: #0f2f57;
+  --grund: #faf8f4;
+  --flaeche: #ffffff;
+  --text: #1b1b1b;
+  --text-leise: #4a4a4a;
+  --rand: #8a8a8a;
+  --rot: #a3121f;
+  --rot-hell: #fdecec;
+  --orange: #8a4300;
+  --orange-hell: #fff1dc;
+  --gruen-knopf: #1d5c33;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 20px;
+}
+
+body {
+  margin: 0;
+  background: var(--grund);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.kopf {
+  background: var(--blau);
+  padding: 0.6rem 1rem;
+}
+
+.marke {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.15rem;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.4rem 0;
+  min-height: 48px;
+  line-height: 48px;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+main:focus {
+  outline: none;
+}
+
+h1 {
+  font-size: 1.6rem;
+  line-height: 1.25;
+  margin: 0.5rem 0 1rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: var(--blau);
+}
+
+/* ---------- Schaltflächen ---------- */
+
+button,
+.knopf {
+  font: inherit;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 64px;
+  padding: 0.75rem 1rem;
+  margin: 0 0 0.75rem;
+  border: 2px solid var(--blau);
+  border-radius: 12px;
+  background: var(--blau);
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+}
+
+button:hover,
+.knopf:hover {
+  background: var(--blau-dunkel);
+}
+
+button:focus-visible,
+.knopf:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 4px solid #e8a800;
+  outline-offset: 2px;
+}
+
+button:disabled {
+  background: #6b6b6b;
+  border-color: #6b6b6b;
+  cursor: not-allowed;
+}
+
+.knopf-zweit,
+button.knopf-zweit {
+  background: var(--flaeche);
+  color: var(--blau);
+}
+
+.knopf-zweit:hover,
+button.knopf-zweit:hover {
+  background: #e8eef6;
+}
+
+button.knopf-gefahr {
+  background: var(--flaeche);
+  color: var(--rot);
+  border-color: var(--rot);
+}
+
+button.knopf-gefahr:hover {
+  background: var(--rot-hell);
+}
+
+button.knopf-klein {
+  min-height: 48px;
+  width: auto;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.start-knopf {
+  min-height: 110px;
+  font-size: 1.4rem;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.start-knopf small {
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+
+.zurueck {
+  width: auto;
+  min-height: 48px;
+  padding: 0.3rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.reihe {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.reihe > * {
+  flex: 1;
+}
+
+/* ---------- Eingaben ---------- */
+
+label {
+  display: block;
+  font-weight: 700;
+  margin: 0 0 0.3rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+textarea,
+select {
+  font: inherit;
+  width: 100%;
+  min-height: 56px;
+  padding: 0.6rem 0.75rem;
+  margin: 0 0 1rem;
+  border: 2px solid var(--rand);
+  border-radius: 10px;
+  background: var(--flaeche);
+  color: var(--text);
+}
+
+textarea {
+  min-height: 9rem;
+  resize: vertical;
+}
+
+.code-eingabe {
+  font-size: 1.6rem;
+  letter-spacing: 0.2em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.wahl {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 64px;
+  padding: 0.6rem 0.9rem;
+  margin: 0 0 0.6rem;
+  border: 2px solid var(--rand);
+  border-radius: 12px;
+  background: var(--flaeche);
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.wahl input {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+  accent-color: var(--blau);
+}
+
+.wahl:has(input:checked) {
+  border-color: var(--blau);
+  background: #e8eef6;
+}
+
+.dateiwahl {
+  display: none;
+}
+
+/* ---------- Kästen ---------- */
+
+.karte {
+  background: var(--flaeche);
+  border: 1px solid #cfcfcf;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 0 0 1rem;
+}
+
+.karte h2:first-child,
+.karte h3:first-child {
+  margin-top: 0;
+}
+
+.hinweisbox {
+  background: #e8eef6;
+  border-left: 6px solid var(--blau);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0 0 1rem;
+}
+
+.fehlerbox {
+  background: var(--rot-hell);
+  border-left: 6px solid var(--rot);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 0 0 1rem;
+  font-weight: 700;
+}
+
+.leise {
+  color: var(--text-leise);
+  font-size: 0.9rem;
+}
+
+.laden {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+/* ---------- Ergebnis des Sicherheitschecks: nur Orange oder Rot, nie Grün ---------- */
+
+.ergebnis {
+  border-radius: 14px;
+  padding: 1rem;
+  margin: 0 0 1rem;
+  border: 3px solid;
+}
+
+.ergebnis h1 {
+  margin-top: 0;
+}
+
+.ergebnis-rot {
+  background: var(--rot-hell);
+  border-color: var(--rot);
+}
+
+.ergebnis-rot h1 {
+  color: var(--rot);
+}
+
+.ergebnis-orange {
+  background: var(--orange-hell);
+  border-color: var(--orange);
+}
+
+.ergebnis-orange h1 {
+  color: var(--orange);
+}
+
+.stufe-marke {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.15rem 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.ergebnis-rot .stufe-marke {
+  background: var(--rot);
+}
+
+.ergebnis-orange .stufe-marke {
+  background: var(--orange);
+}
+
+ul.merkmale {
+  padding-left: 1.2rem;
+  margin: 0 0 1rem;
+}
+
+ul.merkmale li {
+  margin-bottom: 0.4rem;
+}
+
+/* ---------- Anleitung: ein Schritt pro Bildschirm ---------- */
+
+.schritt-zaehler {
+  font-weight: 700;
+  color: var(--text-leise);
+  margin-bottom: 0.25rem;
+}
+
+.schritt-text {
+  font-size: 1.35rem;
+  line-height: 1.45;
+  background: var(--flaeche);
+  border: 1px solid #cfcfcf;
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  margin: 0 0 1rem;
+  min-height: 9rem;
+}
+
+.liste {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.liste li {
+  margin: 0;
+}
+
+.liste .knopf {
+  justify-content: flex-start;
+  text-align: left;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.liste .knopf small {
+  font-weight: 400;
+}
+
+/* ---------- Bereich für Angehörige ---------- */
+
+.eintrag {
+  border-top: 1px solid #cfcfcf;
+  padding: 0.75rem 0;
+}
+
+.eintrag:first-of-type {
+  border-top: none;
+}
+
+.eintrag p {
+  margin-bottom: 0.4rem;
+}
+
+.zitat {
+  background: var(--grund);
+  border-left: 4px solid var(--rand);
+  padding: 0.5rem 0.75rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.qr {
+  display: block;
+  width: 100%;
+  max-width: 16rem;
+  margin: 0 auto 0.75rem;
+  background: #fff;
+  border: 1px solid #cfcfcf;
+}
+
+.einladungscode {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-align: center;
+  margin: 0 0 0.5rem;
+}
+
+pre.daten {
+  background: var(--flaeche);
+  border: 1px solid #cfcfcf;
+  border-radius: 10px;
+  padding: 0.75rem;
+  font-size: 0.75rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Fuß ---------- */
+
+.fuss {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 1.25rem;
+  padding: 0.75rem 1rem 1.25rem;
+  font-size: 0.85rem;
+}
+
+.fuss a {
+  color: var(--text-leise);
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.seite-text {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 1rem;
+}

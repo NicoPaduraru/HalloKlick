@@ -1,0 +1,20 @@
+# Einstellungen nur für Tests.
+spring:
+  datasource:
+    # Testcontainers startet für die Tests eine eigene, leere PostgreSQL-Datenbank in Docker
+    url: jdbc:tc:postgresql:17-alpine:///digitalbegleiter
+    username: test
+    password: test
+
+digitalbegleiter:
+  basis-url: https://test.example
+  intern-token: test-intern-schluessel-1234567890
+  ki:
+    aktiv: true
+    api-key: kein-echter-schluessel
+    tageslimit: 3
+    monatsbudget-usd: 1000
+  begrenzung:
+    # In Tests kommen alle Anfragen von derselben Adresse, darum hier sehr hohe Grenzen
+    pro-minute: 1000000
+    heikel-pro-minute: 1000000

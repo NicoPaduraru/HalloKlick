@@ -1,0 +1,87 @@
+spring:
+  application:
+    name: digitalbegleiter
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5440/digitalbegleiter}
+    username: ${DB_USER:digitalbegleiter}
+    password: ${DB_PASSWORD:nur-lokal}
+  jpa:
+    hibernate:
+      ddl-auto: validate   # Tabellen kommen nur von Flyway
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+  mail:
+    host: ${MAIL_HOST:}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USER:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: ${FORWARD_HEADERS:none}
+  error:
+    include-message: never
+    include-stacktrace: never
+  servlet:
+    session:
+      timeout: 14d
+      cookie:
+        name: DBSITZUNG
+        http-only: true
+        same-site: lax
+        secure: ${COOKIES_SECURE:false}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  health:
+    mail:
+      enabled: false
+
+logging:
+  level:
+    # Keine SQL-Parameter und keine Anfrage-Inhalte in den Logs
+    org.hibernate.SQL: warn
+    org.springframework.web: warn
+
+digitalbegleiter:
+  # Adresse, unter der die App erreichbar ist (für den Link im QR-Code)
+  basis-url: ${BASIS_URL:http://localhost:8080}
+  cookies:
+    secure: ${COOKIES_SECURE:false}
+  # Geheimer Schlüssel für die interne Übersicht (/api/intern/...). Leer = Übersicht abgeschaltet.
+  intern-token: ${INTERN_TOKEN:}
+  # Funktionen einzeln an- und abschaltbar (Feature-Flags)
+  funktionen:
+    sicherheitscheck: ${FUNKTION_SICHERHEITSCHECK:true}
+    anleitungen: ${FUNKTION_ANLEITUNGEN:true}
+    familie: ${FUNKTION_FAMILIE:true}
+  ki:
+    # Die KI läuft nur, wenn aktiv=true, ein API-Schlüssel da ist UND ein Monatsbudget über 0 gesetzt ist.
+    aktiv: ${KI_AKTIV:false}
+    api-key: ${ANTHROPIC_API_KEY:}
+    modell: ${KI_MODELL:claude-opus-5-5}
+    tageslimit: ${KI_TAGESLIMIT:10}
+    monatsbudget-usd: ${KI_MONATSBUDGET_USD:0}
+    # Preise in US-Dollar pro 1 Million Tokens, passend zum gewählten Modell eintragen
+    preis-eingabe-pro-mio: ${KI_PREIS_EINGABE:4.00}
+    preis-ausgabe-pro-mio: ${KI_PREIS_AUSGABE:20.00}
+  push:
+    # VAPID-Schlüsselpaar für Web Push. Leer = kein Web Push.
+    oeffentlicher-schluessel: ${PUSH_OEFFENTLICH:}
+    privater-schluessel: ${PUSH_PRIVAT:}
+    betreff: ${PUSH_BETREFF:mailto:kontakt@example.org}
+  mail:
+    # Absender für E-Mails. Leer = keine E-Mails.
+    absender: ${MAIL_ABSENDER:}
+  begrenzung:
+    pro-minute: ${BEGRENZUNG_PRO_MINUTE:120}
+    heikel-pro-minute: ${BEGRENZUNG_HEIKEL_PRO_MINUTE:10}

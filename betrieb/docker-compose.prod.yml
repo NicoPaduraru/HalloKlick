@@ -1,0 +1,73 @@
+# Betrieb auf dem Server (Bauplan, Abschnitt 12):
+#   Internet -> Caddy (HTTPS) -> Spring Boot -> PostgreSQL
+#
+# Start (im Ordner betrieb, mit ausgefüllter .env):
+#   docker compose -f docker-compose.prod.yml up -d --build
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-daten:/data
+      - caddy-konfig:/config
+    depends_on:
+      - app
+
+  app:
+    build: ..
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/digitalbegleiter
+      DB_USER: digitalbegleiter
+      DB_PASSWORD: ${DB_PASSWORD}
+      BASIS_URL: https://${DOMAIN}
+      # Hinter Caddy: echte Adresse des Besuchers und HTTPS erkennen
+      FORWARD_HEADERS: native
+      COOKIES_SECURE: "true"
+      INTERN_TOKEN: ${INTERN_TOKEN:-}
+      KI_AKTIV: ${KI_AKTIV:-false}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      KI_MODELL: ${KI_MODELL:-claude-opus-5-5}
+      KI_TAGESLIMIT: ${KI_TAGESLIMIT:-10}
+      KI_MONATSBUDGET_USD: ${KI_MONATSBUDGET_USD:-0}
+      KI_PREIS_EINGABE: ${KI_PREIS_EINGABE:-4.00}
+      KI_PREIS_AUSGABE: ${KI_PREIS_AUSGABE:-20.00}
+      PUSH_OEFFENTLICH: ${PUSH_OEFFENTLICH:-}
+      PUSH_PRIVAT: ${PUSH_PRIVAT:-}
+      PUSH_BETREFF: ${PUSH_BETREFF:-}
+      MAIL_HOST: ${MAIL_HOST:-}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_ABSENDER: ${MAIL_ABSENDER:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    # Kein "ports": Die App ist nur über Caddy erreichbar
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: digitalbegleiter
+      POSTGRES_USER: digitalbegleiter
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db-daten:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U digitalbegleiter"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    # Kein "ports": Die Datenbank ist von außen nicht erreichbar
+
+volumes:
+  db-daten:
+  caddy-daten:
+  caddy-konfig:

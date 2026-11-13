@@ -1,0 +1,23 @@
+# Nur für die lokale Entwicklung: startet die Datenbank.
+# Start:  docker compose up -d
+# Stopp:  docker compose down
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: digitalbegleiter
+      POSTGRES_USER: digitalbegleiter
+      POSTGRES_PASSWORD: nur-lokal
+    ports:
+      # Eigener Port 5440, damit es keinen Streit mit anderen PostgreSQL-Installationen auf 5432 und 5433 gibt
+      - "127.0.0.1:5440:5432"
+    volumes:
+      - db-daten:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U digitalbegleiter"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  db-daten:

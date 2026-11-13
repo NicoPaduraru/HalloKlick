@@ -1,0 +1,23 @@
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# Geheimnisse: niemals ins Repository
+.env
+*.env.local
+backups/
+
+# Entwicklungsumgebungen
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+.factorypath
+
+# Betriebssystem
+.DS_Store
+Thumbs.db
+
+# Claude Code (lokale Einstellungen)
+.claude/
