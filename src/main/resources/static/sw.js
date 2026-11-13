@@ -2,7 +2,7 @@
 // Verbindungen bereit und zeigt Benachrichtigungen (Web Push) an.
 //
 // Bei jeder Änderung an den Dateien der Oberfläche die Versionsnummer erhöhen.
-const VERSION = 'digitalbegleiter-v2';
+const VERSION = 'halloklick-v1';
 
 const OBERFLAECHE = [
   '/',
@@ -53,7 +53,7 @@ self.addEventListener('fetch', (ereignis) => {
 // ---------- Benachrichtigungen ----------
 
 self.addEventListener('push', (ereignis) => {
-  let daten = { titel: 'DigitalBegleiter', text: 'Es gibt etwas Neues.', ziel: '/#/familie' };
+  let daten = { titel: 'HalloKlick', text: 'Es gibt etwas Neues.', ziel: '/#/familie' };
   try {
     daten = { ...daten, ...ereignis.data.json() };
   } catch (e) {

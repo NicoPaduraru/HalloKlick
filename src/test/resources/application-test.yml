@@ -6,7 +6,7 @@ spring:
     username: test
     password: test
 
-digitalbegleiter:
+halloklick:
   basis-url: https://test.example
   intern-token: test-intern-schluessel-1234567890
   ki:

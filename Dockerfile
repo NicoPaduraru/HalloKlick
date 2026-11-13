@@ -12,7 +12,7 @@ RUN ./mvnw -B -q package -DskipTests
 FROM eclipse-temurin:21-jre
 RUN useradd --system --no-create-home begleiter
 WORKDIR /app
-COPY --from=bau /bau/target/digitalbegleiter-*.jar app.jar
+COPY --from=bau /bau/target/halloklick-*.jar app.jar
 # Nicht als root laufen
 USER begleiter
 EXPOSE 8080

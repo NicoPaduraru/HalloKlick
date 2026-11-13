@@ -10,10 +10,10 @@
         <relativePath/>
     </parent>
 
-    <groupId>de.digitalbegleiter</groupId>
-    <artifactId>digitalbegleiter</artifactId>
+    <groupId>de.halloklick</groupId>
+    <artifactId>halloklick</artifactId>
     <version>0.1.0-SNAPSHOT</version>
-    <name>digitalbegleiter</name>
+    <name>halloklick</name>
     <description>Kostenlose Hilfe bei digitalen Problemen für Menschen ab 65 und ihre Familien</description>
 
     <properties>

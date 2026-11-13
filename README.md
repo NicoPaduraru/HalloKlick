@@ -1,4 +1,4 @@
-# DigitalBegleiter
+# HalloKlick
 
 Kostenlose Hilfe bei digitalen Problemen für Menschen ab 65 und ihre Familien.
 
@@ -6,7 +6,7 @@ Kostenlose Hilfe bei digitalen Problemen für Menschen ab 65 und ihre Familien.
 > Die Anleitungen und die Testsammlung sind Beispiel-Inhalte. Impressum und Datenschutzerklärung sind
 > Platzhalter. Vor einem echten Start fehlen noch die Schritte aus [Was noch fehlt](#was-noch-fehlt).
 
-Der vollständige Plan steht in [docs/BAUPLAN.md](docs/BAUPLAN.md).
+Der vollständige Plan steht in [docs/BAUPLAN.md](docs/BAUPLAN.md). Dort heißt das Projekt noch „DigitalBegleiter“, das war der Arbeitstitel.
 
 ## Was die App kann
 
@@ -43,7 +43,7 @@ JUnit 5, Mockito, MockMvc, Testcontainers · Docker Compose und Caddy
 
 ### Module
 
-Ein modularer Monolith: eine Anwendung, aber klar getrennte Pakete unter `de.digitalbegleiter`.
+Ein modularer Monolith: eine Anwendung, aber klar getrennte Pakete unter `de.halloklick`.
 Module sprechen nur über ihre öffentlichen Service-Klassen miteinander.
 
 | Modul | Aufgabe |

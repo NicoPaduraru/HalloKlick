@@ -34,7 +34,7 @@ export function zeige(titel, inhalt, { zurueck = '#/', zurueckText = 'Zurück' }
     titel ? h('h1', {}, titel) : null,
     ...[inhalt].flat(),
   );
-  document.title = titel ? titel + ' – DigitalBegleiter' : 'DigitalBegleiter';
+  document.title = titel ? titel + ' – HalloKlick' : 'HalloKlick';
   app.focus();
   window.scrollTo(0, 0);
 }

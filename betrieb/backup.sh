@@ -3,7 +3,7 @@
 #
 # Aufruf im Ordner "betrieb":   sh backup.sh
 # Einrichten als nächtliche Aufgabe (cron), zum Beispiel um 2:30 Uhr:
-#   30 2 * * * cd /pfad/zu/digitalbegleiter/betrieb && sh backup.sh >> backup.log 2>&1
+#   30 2 * * * cd /pfad/zu/halloklick/betrieb && sh backup.sh >> backup.log 2>&1
 #
 # Das Backup wird mit dem Passwort BACKUP_PASSWORT aus der Datei .env verschlüsselt (AES-256).
 # Backups, die älter als 14 Tage sind, werden entfernt.
@@ -19,7 +19,7 @@ fi
 
 ZIEL=backups
 mkdir -p "$ZIEL"
-DATEI="$ZIEL/digitalbegleiter-$(date +%Y-%m-%d_%H%M).sql.gz.enc"
+DATEI="$ZIEL/halloklick-$(date +%Y-%m-%d_%H%M).sql.gz.enc"
 
 docker compose -f docker-compose.prod.yml exec -T db \
     pg_dump -U digitalbegleiter --no-owner digitalbegleiter \
@@ -32,5 +32,5 @@ if [ ! -s "$DATEI" ]; then
   exit 1
 fi
 
-find "$ZIEL" -name 'digitalbegleiter-*.sql.gz.enc' -mtime +14 -delete
+find "$ZIEL" -name 'halloklick-*.sql.gz.enc' -mtime +14 -delete
 echo "$(date) Backup fertig: $DATEI"

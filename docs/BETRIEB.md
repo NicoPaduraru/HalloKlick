@@ -1,4 +1,4 @@
-# Betrieb: DigitalBegleiter auf einem Server
+# Betrieb: HalloKlick auf einem Server
 
 Diese Anleitung gehört zu Bauphase B6. Sie beschreibt den Aufbau aus dem Bauplan (Abschnitt 12):
 
@@ -50,7 +50,7 @@ Das Skript `backup.sh` schreibt ein verschlüsseltes Backup in den Ordner `betri
 Backups, die älter als 14 Tage sind. Als nächtliche Aufgabe einrichten (`crontab -e`):
 
 ```text
-30 2 * * * cd /pfad/zu/digitalbegleiter/betrieb && sh backup.sh >> backup.log 2>&1
+30 2 * * * cd /pfad/zu/halloklick/betrieb && sh backup.sh >> backup.log 2>&1
 ```
 
 Die Backups sollten zusätzlich auf einen zweiten Speicherort kopiert werden. Ein Backup auf demselben
