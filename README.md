@@ -146,3 +146,7 @@ Datenbank, eine Vorlage für die Einstellungen und das Backup-Skript. Die Anleit
 ## Keine Werbung
 
 Keine Werbung, kein Datenverkauf, keine Affiliate-Links.
+
+## Lizenz
+
+[MIT](LICENSE)
