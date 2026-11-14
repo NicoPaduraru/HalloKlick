@@ -60,6 +60,9 @@ export default {
   'pruefen.nichtGespeichert': 'We do not store the content of your message.',
   'pruefen.laeuft': 'We are checking the message …',
   'pruefen.fotoFehler': 'We could not open the photo. Please try again or paste the text.',
+  'pruefen.teilen.titel': 'Even easier: share',
+  'pruefen.teilen.text': 'You do not have to copy anything. In WhatsApp or in a text message, keep your finger on the message for a moment. Choose “Share” and then “HalloKlick”. For this, HalloKlick must be installed on your Android phone.',
+  'pruefen.teilen.keinFoto': 'We cannot check photos at the moment. Please share the text of the message or type it in.',
 
   'ergebnis.nichtGeprueft': 'Not checked',
   'ergebnis.vorsicht': 'Careful',

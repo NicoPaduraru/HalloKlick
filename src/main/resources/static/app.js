@@ -17,6 +17,8 @@ function zeigeBildschirm() {
         return senior.ueber();
       case 'pruefen':
         return senior.pruefen();
+      case 'geteilt':
+        return senior.geteilt();
       case 'anleitungen':
         return senior.anleitungen();
       case 'anleitung':

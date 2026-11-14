@@ -61,6 +61,9 @@ export default {
   'pruefen.nichtGespeichert': 'Wir speichern den Inhalt Ihrer Nachricht nicht.',
   'pruefen.laeuft': 'Wir prüfen die Nachricht …',
   'pruefen.fotoFehler': 'Wir konnten das Foto nicht öffnen. Bitte versuchen Sie es noch einmal oder fügen Sie den Text ein.',
+  'pruefen.teilen.titel': 'Noch einfacher: Teilen',
+  'pruefen.teilen.text': 'Sie müssen nichts kopieren. Legen Sie in WhatsApp oder bei einer SMS den Finger lange auf die Nachricht. Wählen Sie „Teilen“ und dann „HalloKlick“. Dafür muss HalloKlick auf Ihrem Android-Handy installiert sein.',
+  'pruefen.teilen.keinFoto': 'Fotos können wir gerade nicht prüfen. Bitte teilen Sie den Text der Nachricht oder tippen Sie ihn ab.',
 
   'ergebnis.nichtGeprueft': 'Nicht geprüft',
   'ergebnis.vorsicht': 'Vorsicht',

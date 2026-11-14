@@ -43,7 +43,10 @@ public class SicherheitsKonfiguration {
         http
             .csrf(csrf -> csrf
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+                .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
+                // "Teilen an HalloKlick" kommt vom Handy selbst und kann kein Token mitschicken.
+                // Der Weg /teilen liest nichts und ändert nichts, er leitet nur weiter.
+                .ignoringRequestMatchers("/teilen"))
             .securityContext(kontext -> kontext.securityContextRepository(kontextSpeicher))
             .sessionManagement(sitzung -> sitzung.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .addFilterBefore(new GeraeteCookieFilter(anmelder), AuthorizationFilter.class)

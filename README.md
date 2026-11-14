@@ -16,7 +16,7 @@ Der vollständige Plan steht in [docs/BAUPLAN.md](docs/BAUPLAN.md). Dort heißt 
    („keine typischen Warnzeichen“) oder Rot („sieht nach Betrug aus“), einer einfachen Erklärung und dem
    nächsten Schritt. Es gibt absichtlich kein Grün.
 2. **„Wie mache ich das?“**: Anleitung suchen und Schritt für Schritt durchgehen, passend zu Android oder iPhone.
-   Zu jedem Schritt gibt es ein einfaches Symbol. Es gibt 35 Anleitungen pro Sprache.
+   Zu jedem Schritt gibt es ein einfaches Symbol. Es gibt 37 Anleitungen pro Sprache.
 3. **„Familie fragen“**: Eine Hilfeanfrage an die Familie schicken. Der Senior entscheidet selbst, ob er den
    Inhalt mitschickt.
 
@@ -105,10 +105,26 @@ Eingabe -> Stufe 1: Regeln in Java -> Stufe 2: KI (nur wenn nötig) -> Stufe 3: 
 
 Gespeichert werden nur Stufe und Kategorie, nie der Inhalt.
 
+### Teilen statt Kopieren
+
+Kopieren und Einfügen ist für viele ältere Menschen die größte Hürde. Darum meldet sich HalloKlick beim
+Handy als Ziel für „Teilen“ an (Web Share Target, im `manifest.json`): In WhatsApp oder bei einer SMS lange
+auf die Nachricht tippen, „Teilen“ wählen, dann „HalloKlick“. Die Nachricht wird sofort geprüft.
+
+- Der geteilte Text geht nicht in die Adresszeile. Der Service Worker (`sw.js`) nimmt ihn im Handy an und
+  reicht ihn an die App weiter.
+- Das geht nur auf **Android mit Chrome** und nur, wenn HalloKlick installiert ist. Auf dem iPhone gibt es
+  diese Funktion für Web-Apps nicht.
+- Es ist bisher nur im Browser nachgestellt und noch nicht auf einem echten Android-Handy ausprobiert.
+
 ### Testsammlung
 
 Unter `src/test/resources/testsammlung` liegen 50 Betrugsnachrichten und 50 harmlose Nachrichten.
 `TestsammlungTest` prüft bei jedem Testlauf: Keine Betrugsnachricht bekommt Orange, keine harmlose Rot.
+
+Dazu kommt die **feste Testliste** (`feste-liste-betrug.txt` und `feste-liste-harmlos.txt`): Was dort einmal
+steht, muss für immer Rot bleiben beziehungsweise darf nie Rot werden. `FesteTestlisteTest` prüft jede
+Nachricht einzeln. Echte Betrugsnachrichten gehören in diese Liste; wie das geht, steht oben in der Datei.
 
 **Wichtig:** Die Sammlung ist im Moment selbst geschrieben, nach dem Muster bekannter Betrugsmaschen.
 Sie muss durch echte Nachrichten ersetzt werden (zum Beispiel aus Warnungen der Verbraucherzentrale),

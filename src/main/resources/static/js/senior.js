@@ -115,7 +115,47 @@ export function pruefen(vorbelegung = '', fehler = null) {
         t('pruefen.fotoKnopf')),
     ),
     h('p', { class: 'leise' }, t('pruefen.nichtGespeichert')),
+    h('div', { class: 'karte karte-mit-bild' },
+      symbol('finger'),
+      h('div', {}, h('h3', {}, t('pruefen.teilen.titel')), h('p', {}, t('pruefen.teilen.text')))),
   ]);
+}
+
+/**
+ * "Teilen an HalloKlick": Jemand hat in WhatsApp oder SMS eine Nachricht geteilt.
+ * Der Service Worker hat sie im Handy abgelegt. Hier wird sie abgeholt, dort entfernt und sofort geprüft.
+ * So muss niemand kopieren und einfügen.
+ */
+export async function geteilt() {
+  zeigeLaden(t('pruefen.laeuft'));
+  let text = '';
+  let bild = null;
+  try {
+    const ablage = await caches.open('halloklick-geteilt');
+    const textAntwort = await ablage.match('/geteilt/text');
+    const bildAntwort = await ablage.match('/geteilt/bild');
+    if (textAntwort) text = await textAntwort.text();
+    if (bildAntwort) bild = await bildAntwort.blob();
+    await ablage.delete('/geteilt/text');
+    await ablage.delete('/geteilt/bild');
+  } catch (e) {
+    // Ohne Ablage gibt es nichts abzuholen
+  }
+  // Die Adresse wieder auf die normale Seite stellen, damit "Neu laden" nichts Altes sucht
+  history.replaceState(null, '', '#/pruefen');
+
+  if (text.trim()) {
+    const formular = new FormData();
+    formular.append('text', text.slice(0, 5000));
+    await schickeZurPruefung(formular);
+  } else if (bild && zustand.einstellungen.fotoPruefung) {
+    pruefen();
+    await pruefeFoto(bild, document.querySelector('#app form div'));
+  } else if (bild) {
+    pruefen('', t('pruefen.teilen.keinFoto'));
+  } else {
+    pruefen();
+  }
 }
 
 /**
@@ -185,6 +225,8 @@ function zeigeErgebnis(ergebnis) {
       h('p', {}, ergebnis.naechsterSchritt),
       ergebnis.zusatzHinweis && h('p', {}, ergebnis.zusatzHinweis),
     ),
+    // Fester Rat bei Orange: "keine Warnzeichen" heißt nicht "sicher"
+    ergebnis.tipp && h('p', { class: 'hinweisbox tippbox' }, ergebnis.tipp),
     h('p', { class: 'hinweisbox' }, ergebnis.hinweis),
     zustand.einstellungen.familie && h('a', { class: 'knopf', href: '#/hilfe' }, t('ergebnis.familieFragen')),
     h('button', { class: 'knopf-zweit', type: 'button', onclick: () => pruefen() }, t('ergebnis.nochEine')),

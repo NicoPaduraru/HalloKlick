@@ -184,7 +184,7 @@ class SprachenTest extends IntegrationsTest {
         Integer anleitungen = jdbc.queryForObject(
                 "SELECT count(*) FROM anleitung WHERE quelle = 'SYSTEM' AND sprache = ?", Integer.class,
                 sprache.kuerzel());
-        assertThat(anleitungen).isEqualTo(35);
+        assertThat(anleitungen).isEqualTo(37);
 
         Integer ohneBild = jdbc.queryForObject("""
                 SELECT count(*) FROM anleitung_schritt s JOIN anleitung a ON a.id = s.anleitung_id

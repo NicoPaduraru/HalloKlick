@@ -1,0 +1,54 @@
+# FESTE TESTLISTE: Betrugsnachrichten, die für immer Rot bleiben müssen.
+#
+# Wozu: Wird später eine Regel geändert, schlägt der Test "FesteTestlisteTest" sofort Alarm,
+# wenn eine dieser Nachrichten nicht mehr als Betrug erkannt wird.
+#
+# SO FÜGST DU ECHTE NACHRICHTEN HINZU:
+#   1. Die Nachricht hier unten einfügen, so wie sie angekommen ist.
+#   2. Namen, Telefonnummern und Adressen echter Personen vorher entfernen oder ändern.
+#   3. Eine Zeile mit --- zwischen zwei Nachrichten setzen.
+#   4. Den Test laufen lassen:  .\mvnw.cmd test "-Dtest=FesteTestlisteTest"
+# Einträge aus dieser Liste werden nie gelöscht, nur ergänzt.
+#
+# STAND: Die Nachrichten unten sind NACHGEBILDET, nach dem Muster bekannter Betrugsmaschen.
+# Es sind noch keine echten Nachrichten dabei. Alle Adressen und Nummern sind erfunden.
+---
+Hallo, ich habe dir aus Versehen einen 6-stelligen Code per SMS geschickt. Kannst du ihn mir bitte weiterleiten? Ist wichtig!
+---
+Hi Oma, ich bins. Gleich kommt eine SMS mit einem Code bei dir an, schick mir den bitte schnell, ich brauche ihn für mein neues Handy.
+---
+WhatsApp Support: Zur Bestätigung Ihres Kontos senden Sie uns bitte den Code, den Sie gerade per SMS erhalten haben.
+---
+Sorry, I sent you a 6-digit code by mistake. Can you forward it to me please? It's urgent.
+---
+Guten Tag, hier ist Kommissar Weber von der Kriminalpolizei. In Ihrer Nachbarschaft wurden Einbrecher festgenommen. Ihre Adresse stand auf einer Liste. Bitte legen Sie Bargeld und Schmuck bereit, ein Kollege holt alles zur Sicherheit ab.
+---
+Staatsanwaltschaft: Ihr Bankmitarbeiter steht unter Verdacht. Heben Sie Ihr Erspartes ab und übergeben Sie das Bargeld unserem Beamten, damit wir es sicherstellen können.
+---
+Polizei: Bei Ihnen in der Straße sind Einbrüche geplant. Wir verwahren Ihre Wertsachen und Ihren Schmuck. Ein Beamter kommt heute Abend vorbei.
+---
+Ihre Bank: Es ist Falschgeld im Umlauf. Unser Mitarbeiter kommt zu Ihnen und prüft Ihr Bargeld. Bitte halten Sie Ihre Ersparnisse bereit.
+---
+Your account has been suspended due to unusual activity. Verify your identity within 24 hours: https://secure-account-check.com/login
+---
+Royal Mail: Your parcel could not be delivered. Please pay the shipping fee of £1.99 here: https://parcel-redelivery-fee.com
+---
+Hi Mum, I dropped my phone in the toilet. This is my new number, can you save it? I need you to pay a bill for me today.
+---
+Congratulations! You have won a free iPhone. Click here to claim your prize: www.prize-claim-now.top
+---
+Dear customer, your payment failed. Please update your billing details and enter your card number and security code to avoid suspension.
+---
+Netflix: Ihre Zahlung wurde abgelehnt. Bitte aktualisieren Sie Ihre Daten: https://netflx.com/konto
+---
+PayPal: Ungewöhnliche Anmeldung erkannt. Bitte prüfen Sie Ihr Konto: www.paypall.de/sicherheit
+---
+Amazon: Ihr Paket wartet. Sendung verfolgen: http://amazn-lieferung.de/paket
+---
+Sparkasse: Neue Nachricht in Ihrem Postfach. Jetzt ansehen: https://sparkase.de/postfach
+---
+Microsoft: We detected a virus on your computer. Call our technical support now on 0800 5551234 and install the remote access tool.
+---
+Good day, I am a recruiter. We offer a part-time job, work from home and earn 300 EUR per day. Contact us on Telegram.
+---
+I recorded you through your webcam. Pay 800 dollars in Bitcoin or I will send the video to all your contacts.

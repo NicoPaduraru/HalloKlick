@@ -1,0 +1,34 @@
+# FESTE TESTLISTE: harmlose Nachrichten, die NIE Rot bekommen dürfen.
+#
+# Das Gegenstück zu feste-liste-betrug.txt: Jede neue Regel kann auch harmlose Nachrichten treffen.
+# Hier stehen Nachrichten, die den neuen Regeln ähnlich sehen, aber in Ordnung sind.
+# Echte harmlose Nachrichten, die fälschlich Rot bekommen haben, gehören nach der Korrektur hierher.
+# Eine Zeile mit --- trennt zwei Nachrichten. Alle Namen, Adressen und Nummern sind erfunden.
+---
+Ich schicke dir gleich den Code für die Haustür, dann kannst du die Blumen gießen.
+---
+Ihr Bestätigungscode lautet 482913. Geben Sie diesen Code niemals an andere weiter.
+---
+Your verification code is 771204. Do not share this code with anyone.
+---
+Ich habe Omas Schmuck vom Juwelier abgeholt, die Kette ist wieder ganz.
+---
+Die Polizei war heute in unserer Straße, wegen des Unfalls an der Ecke. Alles gut bei uns.
+---
+Denk dran, Bargeld mitzunehmen, auf dem Markt kann man nicht mit Karte zahlen.
+---
+Hi Mum, we landed safely. The hotel is lovely. I will call you tonight.
+---
+Your parcel will be delivered today between 10 and 12. Thank you for shopping with us.
+---
+Happy birthday Grandma! We will visit you on Sunday.
+---
+Dein Netflix-Tipp war super, die Serie haben wir gestern zu Ende geschaut.
+---
+Schau mal, das Rezept von gestern: https://www.lecker-backen.de/apfelkuchen
+---
+Reminder: your dentist appointment is on Tuesday at 9:30. Please bring your insurance card.
+---
+Die Telekom-Rechnung ist diesen Monat niedriger als sonst, schau mal in die App.
+---
+Papa, die Bank hat wegen des neuen Kontos einen Brief geschickt, ich bringe ihn dir morgen mit.

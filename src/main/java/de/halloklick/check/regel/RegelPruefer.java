@@ -178,6 +178,144 @@ public class RegelPruefer {
             "rufen sie", "ruf (mich |uns )?(bitte |sofort |schnell |dringend )?(an|zurueck)", "anrufen", "rueckruf",
             "melden sie sich", "kontaktieren sie", "hotline", "erreichen sie uns", "telefonisch");
 
+    // ---------- Codes weiterleiten ----------
+
+    /**
+     * "Ich habe dir aus Versehen einen Code geschickt, leite ihn mir bitte weiter":
+     * Mit so einem Code übernehmen Betrüger ein WhatsApp- oder Bankkonto.
+     * Wichtig ist die Richtung: Der Code soll ZU jemandem geschickt werden.
+     */
+    private static final Pattern CODE_WEITERGABE = muster(
+            "(schick|sende?|sag|nenn|gib|leite|teil|verrat|brauch)\\w* (mir|uns|ihn mir|den mir|bitte|kurz|schnell|mal)"
+                    + ".{0,50}\\b(code|zahlencode|ziffern|pin|tan)\\b",
+            "\\b(code|zahlencode|ziffern)\\b.{0,60}(weiterleite|weiter leite|leite\\w* .{0,25}weiter|zurueckschick|"
+                    + "zurueck schick|schick\\w* .{0,25}zurueck|an mich|mir (schicken|senden|sagen|nennen|geben|"
+                    + "mitteilen|durchgeben|weiterleiten)|durchgeben|vorlesen)",
+            "\\b(code|zahlencode)\\b.{0,80}(schick|sende?|sag|nenn|gib|leite|teil)\\w* (ihn |den |sie |es )?(mir|uns)\\b",
+            "(aus versehen|versehentlich|irrtuemlich|falsche nummer).{0,80}\\b(code|sms)\\b",
+            "\\b(code|sms)\\b.{0,80}(aus versehen|versehentlich|irrtuemlich)",
+            "(send|forward|give|tell|share|text)\\w* (me|us|it to me|it back) .{0,40}\\b(code|pin|otp)\\b",
+            "\\b(code|otp)\\b.{0,60}(forward it|send it (to me|back)|to me|by mistake|by accident)",
+            "(by mistake|by accident|accidentally).{0,80}\\b(code|otp)\\b");
+
+    /** Der Hinweis der echten Firma, den Code niemandem zu geben, ist keine Abfrage. */
+    private static final Pattern CODE_WARNUNG = muster(
+            "niemals", "\\bnie\\b", "nicht weiter", "an niemanden", "keinem", "\\bnever\\b", "do not share",
+            "don.?t share", "do not forward");
+
+    // ---------- Falsche Polizei ----------
+
+    /** Wertsachen, die falsche Polizisten "in Sicherheit bringen" wollen. */
+    private static final Pattern WERTSACHEN = muster(
+            "bargeld", "schmuck", "wertsachen", "wertgegenstaend", "goldmuenzen", "\\bgold\\b", "erspartes",
+            "ersparnisse", "sparbuch", "schliessfach", "tresor", "geld (zu hause|im haus|in der wohnung|daheim)",
+            "\\bcash\\b", "jewell?ery", "valuables", "savings");
+
+    private static final Pattern UEBERGABE = muster(
+            "abhol", "uebergeb", "uebergabe", "aushaendig", "sicherstell", "in sicherheit", "verwahr", "bereitleg",
+            "bereit leg", "vor die (haus)?tuer", "deponier", "mitgeben", "kollege kommt", "beamter kommt",
+            "kommt (gleich |nachher |heute )?(vorbei|zu ihnen)", "hand over", "collect", "pick up", "keep it safe");
+
+    private static final Pattern EINBRUCH = muster(
+            "einbrecher", "einbruch", "einbrueche", "diebesbande", "bande festgenommen", "raeuber", "ihre adresse "
+                    + "(stand|steht) auf", "liste gefunden", "falschgeld", "bankmitarbeiter .{0,30}(betrueg|kriminell)",
+            "burglar", "break-?in", "counterfeit");
+
+    private static final Pattern BOTE = muster(
+            "beamte", "polizist", "kommissar", "kollege", "kollegin", "kurier", "\\bbote\\b", "mitarbeiter",
+            "officer", "courier", "colleague");
+
+    // ---------- Englische Warnwörter ----------
+    // Viele Betrugsnachrichten kommen auf Englisch. Die Muster entsprechen den deutschen weiter oben.
+
+    private static final Pattern EN_ZEITDRUCK = muster(
+            "\\burgent(ly)?\\b", "immediately", "right away", "as soon as possible", "\\basap\\b",
+            "within (\\d+|one|two|24|48) ?(hours?|days?|hrs?)", "final (notice|warning|reminder)", "last (chance|warning)",
+            "act now", "expires? (today|soon|in)", "will expire", "\\btoday only\\b", "\\bdeadline\\b");
+
+    private static final Pattern EN_DROHUNG = muster(
+            "suspended", "suspension", "\\blocked\\b", "\\bblocked\\b", "restricted", "limited", "deactivated",
+            "disabled", "terminated", "will be (closed|deleted|cancelled|canceled)",
+            "(unusual|suspicious|unauthorized|unauthorised) (activity|sign-?in|login|access|transaction|payment)",
+            "security (alert|issue|problem|reasons)", "(could not|couldn.?t|unable to) (be )?deliver",
+            "failed delivery", "delivery (attempt|failed)", "on hold", "returned to sender", "overdue",
+            "legal action", "arrest warrant", "\\bfine\\b", "has expired");
+
+    private static final Pattern EN_DATENABFRAGE = muster(
+            "(verify|confirm|update|validate|review) your (account|identity|details|information|info|payment|billing|"
+                    + "card|address|delivery address|bank|email|phone|profile)",
+            "(account|identity|details|information|payment|billing|address) (verification|confirmation|update)",
+            "\\blog ?in\\b", "\\bsign ?in\\b", "\\bclick (here|the link|below)\\b", "re-?activate", "\\bunlock\\b",
+            "credentials");
+
+    private static final Pattern EN_GEHEIMNIS = muster(
+            "password", "passcode", "security code", "verification code", "one-?time (code|password)", "\\botp\\b",
+            "card number", "\\bcvv\\b", "\\bcvc\\b", "bank details", "copy of your (id|passport)");
+
+    private static final Pattern EN_GEHEIMNIS_VERLANGT = muster(
+            "\\benter\\b", "\\bprovide\\b", "\\bsend\\b", "\\bshare\\b", "\\btell\\b", "reply with", "\\bconfirm\\b",
+            "\\bgive\\b", "\\btype\\b", "\\bsubmit\\b");
+
+    private static final Pattern EN_GELDFORDERUNG = muster(
+            "\\bpay\\b", "\\bpayment\\b", "\\bfee\\b", "\\bfees\\b", "\\btransfer\\b", "wire", "outstanding (balance|amount)",
+            "\\binvoice\\b", "send (me )?(some )?money", "lend me", "customs (charge|duty)", "shipping (fee|cost)",
+            "\\bdeposit\\b");
+
+    private static final Pattern EN_BETRAG = Pattern.compile("(?:[€$£] ?\\d+|\\d+(?:[.,]\\d+)? ?(?:usd|gbp|dollars?|pounds?|euros?)\\b)");
+
+    private static final Pattern EN_ZAHLART = muster("gift ?cards?", "voucher codes?", "crypto", "prepaid cards?");
+
+    private static final Pattern EN_ZAHLART_VERLANGT = muster(
+            "\\bbuy\\b", "\\bpurchase\\b", "\\bcodes?\\b", "scratch", "\\bpay\\b", "\\bsend\\b", "\\btransfer\\b");
+
+    private static final Pattern EN_FAMILIEN_ANREDE = muster(
+            "\\bmum\\b", "\\bmom\\b", "\\bmummy\\b", "\\bdad\\b", "\\bdaddy\\b", "\\bgrandma\\b", "\\bgrandpa\\b",
+            "\\bgran\\b", "\\bnan\\b");
+
+    private static final Pattern EN_NUMMERNWECHSEL = muster(
+            "new (phone |mobile )?number", "changed my number", "this is my (new )?number", "save this number",
+            "delete (my|the) old (one|number)", "temporary number", "(lost|broke|dropped|smashed) my phone",
+            "phone (is )?(broken|lost|stolen)", "(my )?phone (fell|went) (in|down)");
+
+    private static final Pattern EN_GEWINN = muster(
+            "\\bwon\\b", "\\bwinner\\b", "\\bprize\\b", "\\blottery\\b", "inheritance", "have been selected",
+            "you.?ve been chosen", "\\breward\\b", "\\brefund\\b", "tax rebate", "free (iphone|gift|phone)",
+            "claim (your|now)", "congratulations");
+
+    private static final Pattern EN_FERNZUGRIFF = muster(
+            "remote access", "remote (support|control)", "(microsoft|windows|apple) (support|technician|security)",
+            "tech(nical)? support", "\\bvirus\\b", "\\binfected\\b", "\\bmalware\\b", "\\bhacked\\b");
+
+    private static final Pattern EN_INSTALLIEREN = muster("\\binstall\\b", "\\bdownload\\b");
+
+    private static final Pattern EN_SCHNELLES_GELD = muster(
+            "work from home", "part-?time job", "job offer", "(earn|make) .{0,20}(per|a) (day|week|hour)",
+            "\\binvest", "guaranteed (profit|return)", "passive income", "easy money", "financial freedom",
+            "\\btrading\\b", "\\brecruiter\\b", "\\bhr department\\b");
+
+    private static final Pattern EN_ERPRESSUNG = muster(
+            "\\bwebcam\\b", "recorded you", "recording of you", "video of you", "your password is", "adult (site|website)",
+            "i have access to your (device|computer|phone)", "\\bpublish\\b", "send (it|the video) to (all )?your contacts");
+
+    private static final Pattern EN_ANRUF_VERLANGT = muster(
+            "\\bcall (us|me|this number|now|back|immediately)\\b", "\\bphone us\\b", "contact us", "helpline", "hotline");
+
+    private static final Pattern EN_BANK = muster(
+            "\\bbank\\b", "bank account", "\\bbanking\\b", "credit card", "debit card", "\\bcard\\b", "paypal",
+            "\\biban\\b", "\\bvisa\\b", "mastercard");
+
+    private static final Pattern EN_PAKET = muster(
+            "\\bparcel\\b", "\\bpackage\\b", "\\bdelivery\\b", "\\bshipment\\b", "\\bcourier\\b", "\\bcustoms\\b",
+            "tracking", "\\bdeliver");
+
+    private static final Pattern EN_BEHOERDE = muster(
+            "\\btax\\b", "tax office", "\\bhmrc\\b", "\\birs\\b", "\\bcourt\\b", "the police", "police (officer|department)",
+            "prosecutor", "\\bgovernment\\b", "\\bwarrant\\b");
+
+    private static final Pattern EN_KUNDENKONTO = muster(
+            "your account", "subscription", "membership", "apple id", "\\bprofile\\b", "storage (is )?(full|almost)",
+            "mailbox");
+
     // ---------- Wörter für die Kategorie ----------
 
     private static final Pattern BANK = muster(
@@ -238,30 +376,41 @@ public class RegelPruefer {
         }
 
         // 2. Einzelne Warnzeichen
-        boolean zeitdruck = merke(merkmale, Merkmal.ZEITDRUCK, findet(ZEITDRUCK, t));
-        boolean drohung = merke(merkmale, Merkmal.DROHUNG, findet(DROHUNG, t));
-        boolean datenabfrage = merke(merkmale, Merkmal.DATENABFRAGE, findet(DATENABFRAGE, t));
+        boolean zeitdruck = merke(merkmale, Merkmal.ZEITDRUCK, findet(ZEITDRUCK, t) || findet(EN_ZEITDRUCK, t));
+        boolean drohung = merke(merkmale, Merkmal.DROHUNG, findet(DROHUNG, t) || findet(EN_DROHUNG, t));
+        boolean datenabfrage = merke(merkmale, Merkmal.DATENABFRAGE, findet(DATENABFRAGE, t) || findet(EN_DATENABFRAGE, t));
         boolean geheimnis = merke(merkmale, Merkmal.GEHEIME_DATEN,
-                findet(GEHEIMNIS, t) && findet(GEHEIMNIS_VERLANGT, t) && !findet(GEHEIMNIS_WARNUNG, t));
-        boolean geld = merke(merkmale, Merkmal.GELDFORDERUNG, findet(GELDFORDERUNG, t));
-        boolean betrag = BETRAG.matcher(t).find();
+                !findet(GEHEIMNIS_WARNUNG, t) && !findet(CODE_WARNUNG, t)
+                        && ((findet(GEHEIMNIS, t) && findet(GEHEIMNIS_VERLANGT, t))
+                        || (findet(EN_GEHEIMNIS, t) && findet(EN_GEHEIMNIS_VERLANGT, t))
+                        || findet(CODE_WEITERGABE, t)));
+        boolean geld = merke(merkmale, Merkmal.GELDFORDERUNG, findet(GELDFORDERUNG, t) || findet(EN_GELDFORDERUNG, t));
+        boolean betrag = BETRAG.matcher(t).find() || EN_BETRAG.matcher(t).find();
         boolean zahlart = merke(merkmale, Merkmal.UNGEWOEHNLICHE_ZAHLART,
-                findet(ZAHLART, t) && findet(ZAHLART_VERLANGT, t));
-        boolean familie = findet(FAMILIEN_ANREDE, t);
+                (findet(ZAHLART, t) || findet(EN_ZAHLART, t))
+                        && (findet(ZAHLART_VERLANGT, t) || findet(EN_ZAHLART_VERLANGT, t)));
+        boolean familie = findet(FAMILIEN_ANREDE, t) || findet(EN_FAMILIEN_ANREDE, t);
         boolean handyKaputt = findet(HANDY_KAPUTT, t);
         boolean neueNummer = merke(merkmale, Merkmal.NEUE_NUMMER,
                 familie && !findet(NUMMER_BLEIBT, t)
-                        && (findet(NUMMERNWECHSEL, t) || (handyKaputt && t.contains("nummer"))));
-        boolean gewinn = merke(merkmale, Merkmal.GEWINN, findet(GEWINN, t));
+                        && (findet(NUMMERNWECHSEL, t) || findet(EN_NUMMERNWECHSEL, t)
+                        || (handyKaputt && t.contains("nummer"))));
+        boolean gewinn = merke(merkmale, Merkmal.GEWINN, findet(GEWINN, t) || findet(EN_GEWINN, t));
         boolean rueckruf = merke(merkmale, Merkmal.RUECKRUF,
-                TELEFONNUMMER.matcher(t).find() && findet(ANRUF_VERLANGT, t));
-        boolean infektion = findet(INFEKTION, t);
+                TELEFONNUMMER.matcher(t).find()
+                        && (findet(ANRUF_VERLANGT, t) || findet(EN_ANRUF_VERLANGT, t)));
+        boolean infektion = findet(INFEKTION, t) || findet(EN_FERNZUGRIFF, t);
         boolean fernzugriff = merke(merkmale, Merkmal.FERNZUGRIFF, findet(FERNZUGRIFF_PROGRAMM, t)
-                || (infektion && (rueckruf || fremderLink || findet(INSTALLIEREN, t))));
-        boolean schnellesGeld = merke(merkmale, Merkmal.SCHNELLES_GELD, findet(SCHNELLES_GELD, t));
+                || (infektion && (rueckruf || fremderLink || findet(INSTALLIEREN, t) || findet(EN_INSTALLIEREN, t))));
+        boolean schnellesGeld = merke(merkmale, Merkmal.SCHNELLES_GELD, findet(SCHNELLES_GELD, t) || findet(EN_SCHNELLES_GELD, t));
         boolean schock = merke(merkmale, Merkmal.SCHOCK, findet(SCHOCK, t) && (geld || betrag));
         boolean erpressung = merke(merkmale, Merkmal.ERPRESSUNG,
-                findet(ERPRESSUNG, t) && (geld || betrag || findet(ZAHLART, t)));
+                (findet(ERPRESSUNG, t) || findet(EN_ERPRESSUNG, t))
+                        && (geld || betrag || findet(ZAHLART, t) || findet(EN_ZAHLART, t)));
+        // Falsche Polizei: Wertsachen zusammen mit Polizei, Einbruch-Geschichte oder einem Abholer
+        boolean falschePolizei = merke(merkmale, Merkmal.FALSCHE_POLIZEI, findet(WERTSACHEN, t)
+                && (findet(POLIZEI, t) || findet(EN_BEHOERDE, t) || findet(EINBRUCH, t)
+                        || (findet(UEBERGABE, t) && findet(BOTE, t))));
 
         // 3. Kategorie
         Kategorie kategorie = bestimmeKategorie(t, neueNummer, schock || (familie && (geld || handyKaputt)), gewinn,
@@ -292,10 +441,12 @@ public class RegelPruefer {
                 || fernzugriff
                 || erpressung
                 || schock
+                || falschePolizei
                 // Geld auf ein "sicheres Konto" oder Geld an die "Polizei": immer Betrug
                 || findet(SICHERES_KONTO, t)
                 || (findet(POLIZEI, t) && geld)
-                || (schnellesGeld && (fremderLink || findet(KONTAKT_MESSENGER, t) || rueckruf))
+                || (schnellesGeld && (fremderLink || findet(KONTAKT_MESSENGER, t) || rueckruf
+                        || t.contains("contact us") || t.contains("message us") || t.contains("reply to")))
                 || (rueckruf && druck && (ernst || kategorie == Kategorie.TECHNIK))
                 || (findet(RECHTLICHE_DROHUNG, t) && (geld || betrag) && (fremderLink || rueckruf || zeitdruck));
 
@@ -310,10 +461,10 @@ public class RegelPruefer {
         if (neueNummer) {
             return Kategorie.FAMILIE;
         }
-        long bank = zaehle(BANK, t);
-        long paket = zaehle(PAKET, t);
-        long behoerde = zaehle(BEHOERDE, t);
-        long kundenkonto = zaehle(KUNDENKONTO, t);
+        long bank = zaehle(BANK, t) + zaehle(EN_BANK, t);
+        long paket = zaehle(PAKET, t) + zaehle(EN_PAKET, t);
+        long behoerde = zaehle(BEHOERDE, t) + zaehle(EN_BEHOERDE, t);
+        long kundenkonto = zaehle(KUNDENKONTO, t) + zaehle(EN_KUNDENKONTO, t);
         long hoechste = Math.max(Math.max(bank, paket), Math.max(behoerde, kundenkonto));
         if (hoechste > 0) {
             // Bei Gleichstand gewinnt die Reihenfolge Bank, Paket, Behörde, Kundenkonto

@@ -18,6 +18,13 @@ final class Textbausteine {
     static final String HINWEIS = "Das ist eine Einschätzung, keine Garantie. Klicken Sie nicht auf Links. "
             + "Rufen Sie im Zweifel die Nummer an, die auf Ihrer Bankkarte steht.";
 
+    /**
+     * Steht bei jedem Orange-Ergebnis. Viele Betrugsversuche laufen am Telefon und lassen sich
+     * an einer Nachricht allein nicht erkennen.
+     */
+    static final String TIPP_BEI_ORANGE = "Gibt jemand vor, Polizei oder Bank zu sein? "
+            + "Legen Sie auf und rufen Sie 110 an.";
+
     static final String FOTO_NICHT_GEPRUEFT_TITEL = "Wir konnten das Foto gerade nicht prüfen.";
     static final String FOTO_NICHT_GEPRUEFT_ERKLAERUNG = "Das Foto wurde nicht geprüft. Wir wissen also nicht, "
             + "ob die Nachricht echt ist. Sie können den Text der Nachricht abtippen oder einfügen. "

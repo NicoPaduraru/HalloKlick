@@ -60,6 +60,9 @@ export default {
   'pruefen.nichtGespeichert': 'Non salviamo il contenuto del Suo messaggio.',
   'pruefen.laeuft': 'Stiamo controllando il messaggio …',
   'pruefen.fotoFehler': 'Non siamo riusciti ad aprire la foto. Per favore riprovi oppure incolli il testo.',
+  'pruefen.teilen.titel': 'Ancora più facile: condividere',
+  'pruefen.teilen.text': 'Non deve copiare niente. In WhatsApp o in un SMS tenga il dito a lungo sul messaggio. Scelga «Condividi» e poi «HalloKlick». Per questo HalloKlick deve essere installato sul Suo telefono Android.',
+  'pruefen.teilen.keinFoto': 'Al momento non possiamo controllare le foto. Per favore condivida il testo del messaggio oppure lo scriva.',
 
   'ergebnis.nichtGeprueft': 'Non controllato',
   'ergebnis.vorsicht': 'Attenzione',

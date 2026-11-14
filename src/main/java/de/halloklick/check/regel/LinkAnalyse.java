@@ -143,6 +143,36 @@ final class LinkAnalyse {
         return UNGEWOEHNLICHE_ENDUNGEN.contains(endung) ? Art.UNGEWOEHNLICH : Art.NORMAL;
     }
 
+    /** Echte Wörter, die nur zufällig fast wie eine Marke aussehen. */
+    private static final Set<String> KEINE_TIPPFEHLER = Set.of("telecom", "herpes", "amazone", "amazonas", "klara");
+
+    /**
+     * Ist das Wort genau einen Tippfehler von der Marke entfernt? Ein Tippfehler ist:
+     * ein Buchstabe fehlt, ist zu viel, ist falsch oder zwei benachbarte sind vertauscht.
+     */
+    static boolean istTippfehlerVon(String wort, String marke) {
+        if (wort.equals(marke) || KEINE_TIPPFEHLER.contains(wort) || Math.abs(wort.length() - marke.length()) > 1) {
+            return false;
+        }
+        int anfang = 0;
+        while (anfang < wort.length() && anfang < marke.length() && wort.charAt(anfang) == marke.charAt(anfang)) {
+            anfang++;
+        }
+        // Der erste Unterschied steht an der Stelle "anfang". Danach muss der Rest wieder passen.
+        String restWort = wort.substring(anfang);
+        String restMarke = marke.substring(anfang);
+        if (restWort.length() == restMarke.length()) {
+            boolean falscherBuchstabe = restWort.substring(1).equals(restMarke.substring(1));
+            boolean vertauscht = restWort.length() >= 2
+                    && restWort.charAt(0) == restMarke.charAt(1) && restWort.charAt(1) == restMarke.charAt(0)
+                    && restWort.substring(2).equals(restMarke.substring(2));
+            return falscherBuchstabe || vertauscht;
+        }
+        return restWort.length() < restMarke.length()
+                ? restWort.equals(restMarke.substring(1))   // ein Buchstabe fehlt
+                : restWort.substring(1).equals(restMarke);  // ein Buchstabe zu viel
+    }
+
     private static boolean istNachgemacht(String host, String endung) {
         // Ziffern statt Buchstaben zurückverwandeln: "paypa1" wird zu "paypal"
         String entziffert = host.replace('0', 'o').replace('1', 'l').replace('3', 'e').replace('4', 'a')
@@ -160,6 +190,10 @@ final class LinkAnalyse {
             boolean enthalten = woerter.contains(name);
             boolean nurEntziffert = !enthalten && entzifferteWoerter.contains(name);
             if (nurEntziffert && zifferntrick) {
+                return true;
+            }
+            // Tippfehler-Adresse: ein Wort, das fast wie die Marke aussieht ("netflx" statt "netflix")
+            if (!enthalten && name.length() >= 6 && woerter.stream().anyMatch(wort -> istTippfehlerVon(wort, name))) {
                 return true;
             }
             if (!enthalten) {

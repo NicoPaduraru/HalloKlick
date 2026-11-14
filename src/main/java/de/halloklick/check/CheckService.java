@@ -137,7 +137,8 @@ public class CheckService implements DatenauskunftBeitrag {
         // Feste Texte werden in die Sprache der Anfrage übersetzt. Texte der KI sind schon in dieser Sprache.
         return new CheckErgebnis(gespeichert.getId(), stufe, kategorie, true, texte.hier(Textbausteine.titel(stufe)),
                 texte.hier(erklaerung), merkmale.stream().map(texte::hier).toList(), texte.hier(naechsterSchritt),
-                texte.hier(Textbausteine.HINWEIS), texte.hier(zusatzHinweis), kiVerwendet);
+                texte.hier(Textbausteine.HINWEIS), texte.hier(zusatzHinweis),
+                stufe == Stufe.ORANGE ? texte.hier(Textbausteine.TIPP_BEI_ORANGE) : null, kiVerwendet);
     }
 
     /** Foto konnte nicht gelesen werden: ehrlich sagen, dass nichts geprüft wurde. */
@@ -147,7 +148,8 @@ public class CheckService implements DatenauskunftBeitrag {
                 texte.hier(Textbausteine.FOTO_NICHT_GEPRUEFT_TITEL),
                 texte.hier(Textbausteine.FOTO_NICHT_GEPRUEFT_ERKLAERUNG), List.of(),
                 texte.hier(Textbausteine.naechsterSchritt(Stufe.ORANGE, Kategorie.SONSTIGES)),
-                texte.hier(Textbausteine.HINWEIS), texte.hier(Textbausteine.kiNichtVerfuegbar(kiErgebnis.grund())), false);
+                texte.hier(Textbausteine.HINWEIS), texte.hier(Textbausteine.kiNichtVerfuegbar(kiErgebnis.grund())),
+                texte.hier(Textbausteine.TIPP_BEI_ORANGE), false);
     }
 
     /** In dieser Sprache soll die KI ihre Erklärung schreiben. */

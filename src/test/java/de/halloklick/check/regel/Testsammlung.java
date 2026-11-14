@@ -21,6 +21,16 @@ public final class Testsammlung {
         return lade("/testsammlung/harmlos.txt");
     }
 
+    /** Feste Testliste: Betrugsnachrichten, die für immer Rot bleiben müssen. */
+    public static List<String> festeListeBetrug() {
+        return lade("/testsammlung/feste-liste-betrug.txt");
+    }
+
+    /** Feste Testliste: harmlose Nachrichten, die nie Rot bekommen dürfen. */
+    public static List<String> festeListeHarmlos() {
+        return lade("/testsammlung/feste-liste-harmlos.txt");
+    }
+
     private static List<String> lade(String pfad) {
         try (InputStream datei = Testsammlung.class.getResourceAsStream(pfad)) {
             String inhalt = new String(datei.readAllBytes(), StandardCharsets.UTF_8);

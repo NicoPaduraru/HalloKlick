@@ -18,6 +18,8 @@ public enum Merkmal {
     GEWINN("Ihnen wird ein Gewinn, ein Geschenk oder eine Erbschaft versprochen."),
     FERNZUGRIFF("Sie sollen ein Programm installieren oder jemandem Zugriff auf Ihr Gerät geben."),
     SCHNELLES_GELD("Ihnen wird schnelles Geld versprochen, zum Beispiel ein Nebenjob oder eine Geldanlage."),
+    FALSCHE_POLIZEI("Jemand gibt sich als Polizei, Staatsanwalt oder Bank aus und will Bargeld oder Wertsachen. "
+            + "Die echte Polizei holt niemals Geld oder Schmuck ab."),
     SCHOCK("Die Nachricht macht Angst, zum Beispiel mit einem Unfall oder einer Festnahme, und verlangt Geld."),
     ERPRESSUNG("Jemand behauptet, Sie beobachtet zu haben, und verlangt Geld."),
     RUECKRUF("Sie sollen eine Telefonnummer aus der Nachricht anrufen.");

@@ -10,6 +10,7 @@ import de.halloklick.gemeinsam.Stufe;
  * Die Antwort an den Senior.
  *
  * @param geprueft false nur, wenn ein Foto gar nicht gelesen werden konnte
+ * @param tipp bei Orange immer gesetzt: ein fester Rat, weil "keine Warnzeichen" nicht "sicher" heißt
  * @param zusatzHinweis gesetzt, wenn die KI nicht helfen konnte ("Bitte im Zweifel die Familie fragen")
  */
 public record CheckErgebnis(
@@ -23,5 +24,6 @@ public record CheckErgebnis(
         String naechsterSchritt,
         String hinweis,
         String zusatzHinweis,
+        String tipp,
         boolean kiVerwendet) {
 }
