@@ -1,23 +1,68 @@
 // Die Bildschirme für Senioren: pro Bildschirm eine Aufgabe, große Schaltflächen, einfache Sprache.
 
 import {
-  api, erkanntePlattform, fehlerbox, h, ladeIch, merkzettel, stelleGeraetSicher, zeige, zeigeLaden, zustand,
+  ansicht, api, erkanntePlattform, fehlerbox, h, ladeIch, merkzettel, stelleGeraetSicher, zeige, zeigeLaden, zustand,
 } from './basis.js';
+import { t } from './sprache.js';
+
+// ---------- Hauptseite: Was ist HalloKlick? ----------
+
+function symbol(name) {
+  return h('img', { class: 'symbol', src: `/bilder/${name}.svg`, alt: '', width: '72', height: '72' });
+}
+
+export function ueber() {
+  const punkt = (bild, titel, text) => h('div', { class: 'karte karte-mit-bild' },
+    symbol(bild),
+    h('div', {}, h('h3', {}, titel), h('p', {}, text)));
+
+  zeige(t('ueber.titel'), [
+    h('p', { class: 'gross' }, t('ueber.einleitung')),
+    h('h2', {}, t('ueber.was')),
+    punkt('schloss', t('ueber.echt.titel'), t('ueber.echt.text')),
+    punkt('finger', t('ueber.wie.titel'), t('ueber.wie.text')),
+    punkt('person', t('ueber.familie.titel'), t('ueber.familie.text')),
+    h('h2', {}, t('ueber.wichtig')),
+    h('ul', { class: 'merkmale' },
+      h('li', {}, t('ueber.punkt1')),
+      h('li', {}, t('ueber.punkt2')),
+      h('li', {}, t('ueber.punkt3')),
+      h('li', {}, t('ueber.punkt4'))),
+    h('button', {
+      type: 'button',
+      onclick: () => {
+        merkzettel.schreibe('willkommen', 'gesehen');
+        if (location.hash === '' || location.hash === '#/') start();
+        else location.hash = '#/';
+      },
+    }, t('ueber.los')),
+    zustand.einstellungen.familie && h('div', { class: 'karte' },
+      h('h3', {}, t('ueber.angehoerige.titel')),
+      h('p', {}, t('ueber.angehoerige.text')),
+      h('a', { class: 'knopf knopf-zweit', href: '#/familie' }, t('start.angehoerigeLink'))),
+  ], { zurueck: null });
+}
 
 // ---------- Start: drei große Schaltflächen ----------
 
 export function start() {
+  // Beim allerersten Besuch erklärt die Hauptseite, was HalloKlick ist
+  if (merkzettel.lies('willkommen') !== 'gesehen') {
+    ueber();
+    return;
+  }
   const an = zustand.einstellungen;
-  zeige('Wobei können wir helfen?', [
+  zeige(t('start.titel'), [
     an.sicherheitscheck && h('a', { class: 'knopf start-knopf', href: '#/pruefen' },
-      'Ist das echt?', h('small', {}, 'Eine Nachricht prüfen')),
+      t('start.echt'), h('small', {}, t('start.echt.unter'))),
     an.anleitungen && h('a', { class: 'knopf start-knopf', href: '#/anleitungen' },
-      'Wie mache ich das?', h('small', {}, 'Schritt für Schritt erklärt')),
+      t('start.wie'), h('small', {}, t('start.wie.unter'))),
     an.familie && h('a', { class: 'knopf start-knopf', href: '#/hilfe' },
-      'Familie fragen', h('small', {}, 'Um Hilfe bitten')),
-    h('p', { class: 'leise' }, 'Die Hilfe ist kostenlos. Sie brauchen kein Passwort.'),
+      t('start.familie'), h('small', {}, t('start.familie.unter'))),
+    h('p', { class: 'leise' }, t('start.kostenlos')),
+    h('a', { class: 'knopf knopf-zweit', href: '#/ueber' }, t('fuss.ueber')),
     an.familie && h('p', { class: 'leise' },
-      'Sie helfen Ihren Eltern? ', h('a', { href: '#/familie' }, 'Zum Bereich für Angehörige')),
+      t('start.angehoerigeFrage'), ' ', h('a', { href: '#/familie' }, t('start.angehoerigeLink'))),
   ], { zurueck: null });
 }
 
@@ -38,39 +83,38 @@ export function pruefen(vorbelegung = '', fehler = null) {
       try {
         text.value = await navigator.clipboard.readText();
       } catch (e) {
-        meldung.replaceChildren(h('p', { class: 'hinweisbox' },
-          'Das Einfügen hat nicht geklappt. Tippen Sie lange in das Feld und wählen Sie „Einfügen“.'));
+        meldung.replaceChildren(h('p', { class: 'hinweisbox' }, t('pruefen.einfuegenFehler')));
       }
     },
-  }, 'Kopierten Text einfügen');
+  }, t('pruefen.einfuegen'));
 
-  zeige('Ist das echt?', [
-    h('p', {}, 'Haben Sie eine Nachricht bekommen, die Ihnen komisch vorkommt? Wir schauen sie uns an.'),
+  zeige(t('pruefen.titel'), [
+    h('p', {}, t('pruefen.einleitung')),
     h('form', {
       onsubmit: (ereignis) => {
         ereignis.preventDefault();
         if (!text.value.trim()) {
-          meldung.replaceChildren(fehlerbox('Bitte fügen Sie zuerst den Text der Nachricht ein.'));
+          meldung.replaceChildren(fehlerbox(t('pruefen.leer')));
           return;
         }
         const formular = new FormData();
         formular.append('text', text.value);
-        schickeZurPruefung(formular, meldung);
+        schickeZurPruefung(formular);
       },
     },
-      h('label', { for: 'nachricht' }, 'Text der Nachricht'),
+      h('label', { for: 'nachricht' }, t('pruefen.feld')),
       text,
       einfuegen,
       meldung,
-      h('button', { type: 'submit' }, 'Jetzt prüfen'),
+      h('button', { type: 'submit' }, t('pruefen.knopf')),
     ),
     zustand.einstellungen.fotoPruefung && h('div', {},
-      h('p', {}, 'Oder machen Sie ein Foto von der Nachricht:'),
+      h('p', {}, t('pruefen.fotoFrage')),
       dateiwahl,
       h('button', { class: 'knopf-zweit', type: 'button', onclick: () => dateiwahl.click() },
-        'Foto aufnehmen oder auswählen'),
+        t('pruefen.fotoKnopf')),
     ),
-    h('p', { class: 'leise' }, 'Wir speichern den Inhalt Ihrer Nachricht nicht.'),
+    h('p', { class: 'leise' }, t('pruefen.nichtGespeichert')),
   ]);
 }
 
@@ -90,15 +134,14 @@ async function pruefeFoto(datei, meldung) {
     if (!jpeg) throw new Error('kein Bild');
     const formular = new FormData();
     formular.append('bild', jpeg, 'foto.jpg');
-    await schickeZurPruefung(formular, meldung);
+    await schickeZurPruefung(formular);
   } catch (e) {
-    meldung.replaceChildren(fehlerbox(
-      'Wir konnten das Foto nicht öffnen. Bitte versuchen Sie es noch einmal oder fügen Sie den Text ein.'));
+    meldung.replaceChildren(fehlerbox(t('pruefen.fotoFehler')));
   }
 }
 
-async function schickeZurPruefung(formular, meldung) {
-  zeigeLaden('Wir prüfen die Nachricht …');
+async function schickeZurPruefung(formular) {
+  zeigeLaden(t('pruefen.laeuft'));
   try {
     await stelleGeraetSicher();
     zeigeErgebnis(await api('POST', '/api/checks', { formular }));
@@ -110,24 +153,25 @@ async function schickeZurPruefung(formular, meldung) {
 function zeigeErgebnis(ergebnis) {
   const rot = ergebnis.stufe === 'ROT';
   const feedback = h('div', { class: 'karte' });
-  const frageFeedback = () => feedback.replaceChildren(
-    h('p', {}, h('strong', {}, 'War das hilfreich?')),
-    h('div', { class: 'reihe' },
-      h('button', { class: 'knopf-zweit', type: 'button', onclick: () => gibFeedback(true) }, 'Ja'),
-      h('button', { class: 'knopf-zweit', type: 'button', onclick: () => gibFeedback(false) }, 'Nein')),
-  );
   const gibFeedback = async (hilfreich) => {
     try {
       await api('POST', `/api/checks/${ergebnis.id}/feedback`, { json: { hilfreich } });
     } catch (e) {
       // Feedback ist freiwillig: Ein Fehler hier soll niemanden aufhalten
     }
-    feedback.replaceChildren(h('p', {}, 'Danke für Ihre Antwort.'));
+    feedback.replaceChildren(h('p', {}, t('ergebnis.danke')));
   };
-  frageFeedback();
+  feedback.replaceChildren(
+    h('p', {}, h('strong', {}, t('ergebnis.hilfreich'))),
+    h('div', { class: 'reihe' },
+      h('button', { class: 'knopf-zweit', type: 'button', onclick: () => gibFeedback(true) }, t('allgemein.ja')),
+      h('button', { class: 'knopf-zweit', type: 'button', onclick: () => gibFeedback(false) }, t('allgemein.nein'))),
+  );
 
   // Die Farbe ist nie das einzige Zeichen: Die Stufe steht immer auch als Wort da.
-  const marke = !ergebnis.geprueft ? 'Nicht geprüft' : (rot ? 'Vorsicht' : 'Keine Warnzeichen');
+  const marke = !ergebnis.geprueft
+    ? t('ergebnis.nichtGeprueft')
+    : (rot ? t('ergebnis.vorsicht') : t('ergebnis.keineWarnzeichen'));
 
   zeige(null, [
     h('section', { class: 'ergebnis ' + (rot ? 'ergebnis-rot' : 'ergebnis-orange') },
@@ -135,22 +179,20 @@ function zeigeErgebnis(ergebnis) {
       h('h1', {}, ergebnis.titel),
       h('p', {}, ergebnis.erklaerung),
       ergebnis.merkmale.length > 0 && h('div', {},
-        h('p', {}, h('strong', {}, 'Das ist uns aufgefallen:')),
+        h('p', {}, h('strong', {}, t('ergebnis.aufgefallen'))),
         h('ul', { class: 'merkmale' }, ergebnis.merkmale.map((merkmal) => h('li', {}, merkmal)))),
-      h('p', {}, h('strong', {}, 'Was Sie jetzt tun können:')),
+      h('p', {}, h('strong', {}, t('ergebnis.tun'))),
       h('p', {}, ergebnis.naechsterSchritt),
       ergebnis.zusatzHinweis && h('p', {}, ergebnis.zusatzHinweis),
     ),
     h('p', { class: 'hinweisbox' }, ergebnis.hinweis),
-    zustand.einstellungen.familie && h('a', { class: 'knopf', href: '#/hilfe' }, 'Familie fragen'),
-    h('button', { class: 'knopf-zweit', type: 'button', onclick: () => pruefen() }, 'Noch eine Nachricht prüfen'),
+    zustand.einstellungen.familie && h('a', { class: 'knopf', href: '#/hilfe' }, t('ergebnis.familieFragen')),
+    h('button', { class: 'knopf-zweit', type: 'button', onclick: () => pruefen() }, t('ergebnis.nochEine')),
     ergebnis.geprueft && feedback,
-  ], { zurueck: '#/', zurueckText: 'Zum Anfang' });
+  ], { zurueck: '#/', zurueckText: t('allgemein.zumAnfang') });
 }
 
 // ---------- "Wie mache ich das?" ----------
-
-const PLATTFORM_NAMEN = { ANDROID: 'Android', IOS: 'iPhone', ALLE: 'Alle Handys' };
 
 function meinePlattform() {
   const gemerkt = merkzettel.lies('plattform');
@@ -159,17 +201,29 @@ function meinePlattform() {
   return erkannt === 'SONSTIGE' ? null : erkannt;
 }
 
+/** Nur einfache Namen aus unserem Bilder-Ordner sind erlaubt, nie eine fremde Adresse. */
+function schrittBild(bildPfad, klasse) {
+  if (!bildPfad || !/^[a-z0-9-]+$/.test(bildPfad)) return null;
+  // alt bleibt leer: Der Text des Schritts sagt alles, das Bild ist nur eine Stütze für das Auge
+  return h('img', { class: klasse, src: `/bilder/${bildPfad}.svg`, alt: '' });
+}
+
 export async function anleitungen(suchwort = '') {
+  const lauf = ansicht.nummer();
   const plattform = meinePlattform();
-  const feld = h('input', { id: 'suche', type: 'search', value: suchwort, placeholder: 'zum Beispiel: Foto schicken' });
-  const ergebnisse = h('div', {}, h('p', { class: 'laden', role: 'status' }, 'Einen Moment bitte …'));
+  const feld = h('input', { id: 'suche', type: 'search', value: suchwort, placeholder: t('anleitungen.beispiel') });
+  const ergebnisse = h('div', {}, h('p', { class: 'laden', role: 'status' }, t('allgemein.laden')));
 
   const waehlePlattform = (neu) => {
     merkzettel.schreibe('plattform', neu);
     anleitungen(feld.value);
   };
+  const plattformKnopf = (wert) => h('button', {
+    class: plattform === wert ? '' : 'knopf-zweit', type: 'button', 'aria-pressed': String(plattform === wert),
+    onclick: () => waehlePlattform(wert),
+  }, t('plattform.' + wert));
 
-  zeige('Wie mache ich das?', [
+  zeige(t('anleitungen.titel'), [
     h('form', {
       role: 'search',
       onsubmit: (ereignis) => {
@@ -177,21 +231,14 @@ export async function anleitungen(suchwort = '') {
         anleitungen(feld.value);
       },
     },
-      h('label', { for: 'suche' }, 'Was möchten Sie tun?'),
+      h('label', { for: 'suche' }, t('anleitungen.frage')),
       feld,
-      h('button', { type: 'submit' }, 'Suchen'),
+      h('button', { type: 'submit' }, t('anleitungen.suchen')),
     ),
-    h('p', {}, h('strong', {}, 'Ihr Handy: '), plattform ? PLATTFORM_NAMEN[plattform] : 'nicht gewählt'),
-    h('div', { class: 'reihe' },
-      h('button', {
-        class: plattform === 'ANDROID' ? '' : 'knopf-zweit', type: 'button', 'aria-pressed': String(plattform === 'ANDROID'),
-        onclick: () => waehlePlattform('ANDROID'),
-      }, 'Android'),
-      h('button', {
-        class: plattform === 'IOS' ? '' : 'knopf-zweit', type: 'button', 'aria-pressed': String(plattform === 'IOS'),
-        onclick: () => waehlePlattform('IOS'),
-      }, 'iPhone')),
-    h('h2', {}, suchwort.trim() ? 'Das haben wir gefunden' : 'Alle Anleitungen'),
+    h('p', {}, h('strong', {}, t('anleitungen.ihrHandy')), ' ',
+      plattform ? t('plattform.' + plattform) : t('anleitungen.nichtGewaehlt')),
+    h('div', { class: 'reihe' }, plattformKnopf('ANDROID'), plattformKnopf('IOS')),
+    h('h2', {}, suchwort.trim() ? t('anleitungen.gefunden') : t('anleitungen.alle')),
     ergebnisse,
   ]);
 
@@ -200,16 +247,18 @@ export async function anleitungen(suchwort = '') {
     if (suchwort.trim()) abfrage.set('suche', suchwort.trim());
     if (plattform) abfrage.set('plattform', plattform);
     const gefunden = await api('GET', '/api/anleitungen?' + abfrage);
+    if (!ansicht.gilt(lauf)) return;
     if (gefunden.length === 0) {
-      ergebnisse.replaceChildren(h('p', { class: 'hinweisbox' },
-        'Dazu haben wir leider keine Anleitung gefunden. Versuchen Sie ein anderes Wort oder fragen Sie Ihre Familie.'));
+      ergebnisse.replaceChildren(h('p', { class: 'hinweisbox' }, t('anleitungen.keine')));
       return;
     }
     ergebnisse.replaceChildren(h('ul', { class: 'liste' }, gefunden.map((anleitung) => h('li', {},
-      h('a', { class: 'knopf knopf-zweit', href: `#/anleitung/${anleitung.id}/1` },
-        anleitung.titel,
-        h('small', {}, (anleitung.quelle === 'FAMILIE' ? 'Von Ihrer Familie · ' : '')
-          + PLATTFORM_NAMEN[anleitung.plattform]))))));
+      h('a', { class: 'knopf knopf-zweit knopf-mit-bild', href: `#/anleitung/${anleitung.id}/1` },
+        schrittBild(anleitung.bildPfad, 'listen-bild'),
+        h('span', {},
+          anleitung.titel,
+          h('small', {}, (anleitung.quelle === 'FAMILIE' ? t('anleitungen.vonFamilie') + ' · ' : '')
+            + t('plattform.' + anleitung.plattform))))))));
   } catch (e) {
     ergebnisse.replaceChildren(fehlerbox(e.message));
   }
@@ -219,14 +268,17 @@ const geladeneAnleitungen = new Map();
 
 /** Ein Schritt pro Bildschirm, mit sichtbarem "Weiter" und "Zurück". Keine Wischgesten. */
 export async function anleitung(id, schrittNummer) {
+  const lauf = ansicht.nummer();
+  const zurSuche = { zurueck: '#/anleitungen', zurueckText: t('anleitung.zurSuche') };
   let daten = geladeneAnleitungen.get(id);
   if (!daten) {
     zeigeLaden();
     try {
       daten = await api('GET', '/api/anleitungen/' + encodeURIComponent(id));
       geladeneAnleitungen.set(id, daten);
+      if (!ansicht.gilt(lauf)) return;
     } catch (e) {
-      zeige('Anleitung', fehlerbox(e.message), { zurueck: '#/anleitungen', zurueckText: 'Zur Suche' });
+      zeige(t('anleitung.titel'), fehlerbox(e.message), zurSuche);
       return;
     }
   }
@@ -236,48 +288,45 @@ export async function anleitung(id, schrittNummer) {
   const letzter = nummer === anzahl;
 
   zeige(daten.titel, [
-    h('p', { class: 'schritt-zaehler' }, `Schritt ${nummer} von ${anzahl}`),
-    h('p', { class: 'schritt-text' }, schritt.text),
+    h('p', { class: 'schritt-zaehler' }, t('anleitung.schritt', { nummer, anzahl })),
+    h('div', { class: 'schritt-text' },
+      schrittBild(schritt.bildPfad, 'schritt-bild'),
+      h('p', {}, schritt.text)),
     letzter
-      ? h('a', { class: 'knopf', href: '#/' }, 'Fertig')
-      : h('a', { class: 'knopf', href: `#/anleitung/${id}/${nummer + 1}` }, 'Weiter →'),
+      ? h('a', { class: 'knopf', href: '#/' }, t('allgemein.fertig'))
+      : h('a', { class: 'knopf', href: `#/anleitung/${id}/${nummer + 1}` }, t('anleitung.weiter')),
     nummer > 1 && h('a', { class: 'knopf knopf-zweit', href: `#/anleitung/${id}/${nummer - 1}` },
-      '← Einen Schritt zurück'),
-    !daten.geprueftAm && daten.quelle === 'SYSTEM' && h('p', { class: 'leise' },
-      'Diese Anleitung ist ein Beispiel. Auf Ihrem Handy kann etwas anders heißen.'),
-  ], { zurueck: '#/anleitungen', zurueckText: 'Zur Suche' });
+      t('anleitung.zurueck')),
+    !daten.geprueftAm && daten.quelle === 'SYSTEM' && h('p', { class: 'leise' }, t('anleitung.beispiel')),
+  ], zurSuche);
 }
 
 // ---------- "Familie fragen" ----------
 
-const THEMEN = [
-  ['KOMISCHE_NACHRICHT', 'Ich habe eine komische Nachricht bekommen'],
-  ['HANDY_HILFE', 'Ich komme am Handy nicht weiter'],
-  ['BITTE_ANRUFEN', 'Bitte ruf mich an'],
-  ['ETWAS_ANDERES', 'Etwas anderes'],
-];
+const THEMEN = ['KOMISCHE_NACHRICHT', 'HANDY_HILFE', 'BITTE_ANRUFEN', 'ETWAS_ANDERES'];
 
 export async function hilfe() {
+  const lauf = ansicht.nummer();
   zeigeLaden();
   let familien = [];
   try {
     const ich = await stelleGeraetSicher();
     if (ich && ich.typ === 'ANGEHOERIGER') {
-      zeige('Familie fragen', h('p', { class: 'hinweisbox' },
-        'Sie sind als Angehöriger angemeldet. Diese Seite ist für Ihre Eltern gedacht.'));
+      zeige(t('hilfe.titel'), h('p', { class: 'hinweisbox' }, t('hilfe.alsAngehoeriger')));
       return;
     }
     familien = await api('GET', '/api/ich/familien');
+    if (!ansicht.gilt(lauf)) return;
   } catch (e) {
-    zeige('Familie fragen', fehlerbox(e.message));
+    zeige(t('hilfe.titel'), fehlerbox(e.message));
     return;
   }
 
   if (familien.length === 0) {
-    zeige('Familie fragen', [
-      h('p', {}, 'Ihr Handy ist noch nicht mit Ihrer Familie verbunden.'),
-      h('p', {}, 'Bitten Sie Ihre Tochter oder Ihren Sohn um einen Code. Den Code tippen Sie dann hier ein.'),
-      h('a', { class: 'knopf', href: '#/verbinden' }, 'Ich habe einen Code'),
+    zeige(t('hilfe.titel'), [
+      h('p', {}, t('hilfe.nichtVerbunden')),
+      h('p', {}, t('hilfe.codeErklaerung')),
+      h('a', { class: 'knopf', href: '#/verbinden' }, t('hilfe.habeCode')),
     ]);
     return;
   }
@@ -285,20 +334,20 @@ export async function hilfe() {
   const meldung = h('div', {});
   const textfeld = h('textarea', { id: 'geteilt', maxlength: '2000' });
   const textbereich = h('div', { hidden: true },
-    h('label', { for: 'geteilt' }, 'Das möchte ich mitschicken'), textfeld);
+    h('label', { for: 'geteilt' }, t('hilfe.mitschickenFeld')), textfeld);
   const teilen = h('input', {
     type: 'checkbox',
     onchange: () => { textbereich.hidden = !teilen.checked; },
   });
 
-  zeige('Familie fragen', [
-    h('p', {}, 'Ihre Nachricht geht an: ', h('strong', {}, familien.map((f) => f.name).join(', '))),
+  zeige(t('hilfe.titel'), [
+    h('p', {}, t('hilfe.gehtAn'), ' ', h('strong', {}, familien.map((f) => f.name).join(', '))),
     h('form', {
       onsubmit: async (ereignis) => {
         ereignis.preventDefault();
         const thema = new FormData(ereignis.target).get('thema');
         if (!thema) {
-          meldung.replaceChildren(fehlerbox('Bitte wählen Sie aus, worum es geht.'));
+          meldung.replaceChildren(fehlerbox(t('hilfe.themaFehlt')));
           return;
         }
         const knopf = ereignis.target.querySelector('button[type=submit]');
@@ -307,10 +356,10 @@ export async function hilfe() {
           await api('POST', '/api/hilfeanfragen', {
             json: { thema, geteilterText: teilen.checked && textfeld.value.trim() ? textfeld.value : null },
           });
-          zeige('Ihre Familie weiß Bescheid', [
-            h('p', {}, 'Wir haben Ihrer Familie geschrieben. Jemand meldet sich bei Ihnen.'),
-            h('p', { class: 'hinweisbox' }, 'Ist es eilig? Dann rufen Sie Ihre Familie am besten gleich an.'),
-            h('a', { class: 'knopf', href: '#/' }, 'Fertig'),
+          zeige(t('hilfe.fertig.titel'), [
+            h('p', {}, t('hilfe.fertig.text')),
+            h('p', { class: 'hinweisbox' }, t('hilfe.fertig.eilig')),
+            h('a', { class: 'knopf', href: '#/' }, t('allgemein.fertig')),
           ], { zurueck: null });
         } catch (e) {
           knopf.disabled = false;
@@ -319,14 +368,14 @@ export async function hilfe() {
       },
     },
       h('fieldset', { class: 'karte' },
-        h('legend', {}, h('strong', {}, 'Worum geht es?')),
-        THEMEN.map(([wert, text]) => h('label', { class: 'wahl' },
-          h('input', { type: 'radio', name: 'thema', value: wert }), text))),
+        h('legend', {}, h('strong', {}, t('hilfe.worum'))),
+        THEMEN.map((wert) => h('label', { class: 'wahl' },
+          h('input', { type: 'radio', name: 'thema', value: wert }), t('thema.' + wert)))),
       // Der Senior entscheidet selbst, ob er den Inhalt mitschickt
-      h('label', { class: 'wahl' }, teilen, 'Ich möchte einen Text mitschicken, zum Beispiel die Nachricht'),
+      h('label', { class: 'wahl' }, teilen, t('hilfe.mitschicken')),
       textbereich,
       meldung,
-      h('button', { type: 'submit' }, 'Senden'),
+      h('button', { type: 'submit' }, t('hilfe.senden')),
     ),
   ]);
 }
@@ -340,13 +389,13 @@ export function verbinden(codeAusLink = '') {
   });
   const meldung = h('div', {});
 
-  zeige('Mit der Familie verbinden', [
-    h('p', {}, 'Ihre Tochter oder Ihr Sohn hat einen Code für Sie. Er hat 8 Zeichen.'),
+  zeige(t('verbinden.titel'), [
+    h('p', {}, t('verbinden.erklaerung')),
     h('form', {
       onsubmit: async (ereignis) => {
         ereignis.preventDefault();
         if (!feld.value.trim()) {
-          meldung.replaceChildren(fehlerbox('Bitte geben Sie den Code ein.'));
+          meldung.replaceChildren(fehlerbox(t('verbinden.leer')));
           return;
         }
         const knopf = ereignis.target.querySelector('button');
@@ -355,23 +404,21 @@ export function verbinden(codeAusLink = '') {
           await stelleGeraetSicher();
           const familie = await api('POST', '/api/geraete/koppeln', { json: { code: feld.value } });
           await ladeIch(true);
-          zeige('Das hat geklappt', [
-            h('p', {}, 'Ihr Handy ist jetzt verbunden mit: ', h('strong', {}, familie.name)),
-            h('p', {}, 'Wenn Sie Hilfe brauchen, tippen Sie auf „Familie fragen“.'),
-            h('a', { class: 'knopf', href: '#/' }, 'Zum Anfang'),
+          zeige(t('verbinden.ok.titel'), [
+            h('p', {}, t('verbinden.ok.text'), ' ', h('strong', {}, familie.name)),
+            h('p', {}, t('verbinden.ok.tipp')),
+            h('a', { class: 'knopf', href: '#/' }, t('allgemein.zumAnfang')),
           ], { zurueck: null });
         } catch (e) {
           knopf.disabled = false;
-          meldung.replaceChildren(fehlerbox(e.status === 403
-            ? 'Sie sind als Angehöriger angemeldet. Den Code gibt Ihre Mutter oder Ihr Vater auf dem eigenen Handy ein.'
-            : e.message));
+          meldung.replaceChildren(fehlerbox(e.status === 403 ? t('verbinden.alsAngehoeriger') : e.message));
         }
       },
     },
-      h('label', { for: 'code' }, 'Code'),
+      h('label', { for: 'code' }, t('verbinden.feld')),
       feld,
       meldung,
-      h('button', { type: 'submit' }, 'Verbinden'),
+      h('button', { type: 'submit' }, t('verbinden.knopf')),
     ),
   ]);
 }
@@ -379,13 +426,14 @@ export function verbinden(codeAusLink = '') {
 // ---------- Meine Daten (Auskunft und Löschen) ----------
 
 export async function meineDaten() {
+  const lauf = ansicht.nummer();
   zeigeLaden();
   const ich = await ladeIch(true);
+  if (!ansicht.gilt(lauf)) return;
   if (!ich) {
-    zeige('Meine Daten', [
-      h('p', {}, 'Wir haben auf diesem Gerät noch nichts über Sie gespeichert.'),
-      h('p', { class: 'leise' }, 'Erst wenn Sie eine Nachricht prüfen oder Ihre Familie fragen, '
-        + 'legen wir ein anonymes Konto für dieses Gerät an. Ohne Namen und ohne Passwort.'),
+    zeige(t('daten.titel'), [
+      h('p', {}, t('daten.nichts')),
+      h('p', { class: 'leise' }, t('daten.nichtsErklaerung')),
     ]);
     return;
   }
@@ -393,48 +441,50 @@ export async function meineDaten() {
   const anzeige = h('div', {});
   const loeschbereich = h('div', {});
   const zeigeLoeschen = () => loeschbereich.replaceChildren(
-    h('button', { class: 'knopf-gefahr', type: 'button', onclick: frageNach }, 'Alle meine Daten löschen'));
+    h('button', { class: 'knopf-gefahr', type: 'button', onclick: frageNach }, t('daten.loeschen')));
   const frageNach = () => loeschbereich.replaceChildren(
     h('div', { class: 'fehlerbox' },
-      h('p', {}, 'Wirklich alles löschen? Das kann man nicht rückgängig machen.'),
-      ich.typ === 'ANGEHOERIGER' && h('p', {},
-        'Sind Sie der einzige Angehörige, wird auch Ihre Familie mit allen Anfragen und eigenen Anleitungen gelöscht.')),
+      h('p', {}, t('daten.wirklich')),
+      ich.typ === 'ANGEHOERIGER' && h('p', {}, t('daten.familieWarnung'))),
     h('button', {
       class: 'knopf-gefahr', type: 'button',
       onclick: async () => {
         try {
           await api('DELETE', '/api/ich');
           zustand.ich = null;
-          zeige('Ihre Daten sind gelöscht', [
-            h('p', {}, 'Wir haben alles gelöscht, was zu Ihnen gespeichert war.'),
-            h('a', { class: 'knopf', href: '#/' }, 'Zum Anfang'),
+          zeige(t('daten.geloescht.titel'), [
+            h('p', {}, t('daten.geloescht.text')),
+            h('a', { class: 'knopf', href: '#/' }, t('allgemein.zumAnfang')),
           ], { zurueck: null });
         } catch (e) {
           loeschbereich.replaceChildren(fehlerbox(e.message));
         }
       },
-    }, 'Ja, alles löschen'),
-    h('button', { type: 'button', onclick: zeigeLoeschen }, 'Nein, nichts löschen'));
+    }, t('daten.jaLoeschen')),
+    h('button', { type: 'button', onclick: zeigeLoeschen }, t('daten.neinLoeschen')));
   zeigeLoeschen();
 
-  zeige('Meine Daten', [
-    h('p', {}, ich.typ === 'SENIOR'
-      ? 'Für dieses Gerät gibt es ein anonymes Konto. Den Inhalt Ihrer Nachrichten speichern wir nicht.'
-      : 'Sie sind als Angehöriger angemeldet.'),
+  zeige(t('daten.titel'), [
+    h('p', {}, ich.typ === 'SENIOR' ? t('daten.senior') : t('daten.angehoeriger')),
     h('button', {
       class: 'knopf-zweit', type: 'button',
       onclick: async () => {
         try {
           const daten = await api('GET', '/api/ich/daten');
           anzeige.replaceChildren(
-            h('p', {}, 'Das ist alles, was wir zu Ihnen gespeichert haben:'),
+            h('p', {}, t('daten.alles')),
             h('pre', { class: 'daten', tabindex: '0' }, JSON.stringify(daten, null, 2)));
         } catch (e) {
           anzeige.replaceChildren(fehlerbox(e.message));
         }
       },
-    }, 'Meine Daten ansehen'),
+    }, t('daten.ansehen')),
     anzeige,
     loeschbereich,
   ]);
+}
+
+/** Nach einem Sprachwechsel: geladene Anleitungen vergessen, sie sind in der alten Sprache. */
+export function vergissAnleitungen() {
+  geladeneAnleitungen.clear();
 }

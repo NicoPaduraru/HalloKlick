@@ -45,6 +45,9 @@ class Anleitung {
     @Column(nullable = false)
     private String stichworte;
 
+    @Column(nullable = false)
+    private String sprache = "de";
+
     @Column(name = "geprueft_am")
     private LocalDate geprueftAm;
 
@@ -61,11 +64,12 @@ class Anleitung {
     }
 
     /** Eigene Anleitung einer Familie. */
-    static Anleitung fuerFamilie(UUID familieId, Instant jetzt) {
+    static Anleitung fuerFamilie(UUID familieId, String sprache, Instant jetzt) {
         Anleitung anleitung = new Anleitung();
         anleitung.id = UUID.randomUUID();
         anleitung.quelle = AnleitungQuelle.FAMILIE;
         anleitung.familieId = familieId;
+        anleitung.sprache = sprache;
         anleitung.stichworte = "";
         anleitung.erstelltAm = jetzt;
         return anleitung;

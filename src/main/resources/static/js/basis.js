@@ -1,5 +1,7 @@
 // Gemeinsame Helfer für alle Bildschirme: Seiten bauen und mit dem Server sprechen.
 
+import { sprache, t } from "./sprache.js";
+
 export const app = document.getElementById('app');
 
 /**
@@ -28,18 +30,18 @@ export function ersetze(element, ...kinder) {
 }
 
 /** Zeigt einen Bildschirm an: Zurück-Schaltfläche, Überschrift, Inhalt. */
-export function zeige(titel, inhalt, { zurueck = '#/', zurueckText = 'Zurück' } = {}) {
+export function zeige(titel, inhalt, { zurueck = "#/", zurueckText = t("allgemein.zurueck") } = {}) {
   ersetze(app,
     zurueck ? h('a', { class: 'knopf knopf-zweit zurueck', href: zurueck }, '← ' + zurueckText) : null,
     titel ? h('h1', {}, titel) : null,
     ...[inhalt].flat(),
   );
-  document.title = titel ? titel + ' – HalloKlick' : 'HalloKlick';
+  document.title = titel ? titel + " – HalloKlick" : "HalloKlick";
   app.focus();
   window.scrollTo(0, 0);
 }
 
-export function zeigeLaden(text = 'Einen Moment bitte …') {
+export function zeigeLaden(text = t("allgemein.laden")) {
   app.replaceChildren(h('p', { class: 'laden', role: 'status' }, text));
 }
 
@@ -66,7 +68,8 @@ function cookie(name) {
  * Bei ändernden Anfragen geht das CSRF-Token mit (Schutz vor gefälschten Anfragen fremder Seiten).
  */
 export async function api(methode, pfad, { json, formular } = {}) {
-  const kopf = { Accept: 'application/json' };
+  // Der Server antwortet in der gewählten Sprache
+  const kopf = { Accept: "application/json", "Accept-Language": sprache() };
   if (methode !== 'GET') {
     if (!cookie('XSRF-TOKEN')) {
       // Der Server legt das Token bei jeder Antwort ins Cookie
@@ -86,7 +89,7 @@ export async function api(methode, pfad, { json, formular } = {}) {
   try {
     antwort = await fetch(pfad, { method: methode, headers: kopf, body: inhalt, credentials: 'same-origin' });
   } catch (e) {
-    throw new ApiFehler(0, 'Keine Verbindung zum Internet. Bitte versuchen Sie es später noch einmal.');
+    throw new ApiFehler(0, t("allgemein.keineVerbindung"));
   }
   if (antwort.status === 204) return null;
   const text = await antwort.text();
@@ -97,8 +100,7 @@ export async function api(methode, pfad, { json, formular } = {}) {
     daten = null;
   }
   if (!antwort.ok) {
-    const meldung = (daten && daten.detail)
-      || 'Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.';
+    const meldung = (daten && daten.detail) || t("allgemein.fehler");
     throw new ApiFehler(antwort.status, meldung);
   }
   return daten;
@@ -169,8 +171,26 @@ export const merkzettel = {
 
 export function datum(isoText) {
   try {
-    return new Date(isoText).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' });
+    return new Date(isoText).toLocaleString(sprache(), { dateStyle: 'medium', timeStyle: 'short' });
   } catch (e) {
     return isoText;
   }
 }
+
+/**
+ * Schutz vor veralteten Seiten: Manche Bildschirme warten auf den Server, bevor sie sich zeigen.
+ * Hat der Nutzer in der Zwischenzeit woanders hingetippt, darf die alte Seite nicht mehr erscheinen.
+ * Der Einstieg (app.js) zählt bei jedem Seitenwechsel hoch, die Bildschirme prüfen nach dem Warten.
+ */
+let ansichtNummer = 0;
+export const ansicht = {
+  neu() {
+    ansichtNummer += 1;
+  },
+  nummer() {
+    return ansichtNummer;
+  },
+  gilt(nummer) {
+    return nummer === ansichtNummer;
+  },
+};

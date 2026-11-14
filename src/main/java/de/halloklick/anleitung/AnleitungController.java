@@ -1,6 +1,7 @@
 package de.halloklick.anleitung;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.halloklick.gemeinsam.ApiFehler;
 import de.halloklick.gemeinsam.Einstellungen;
+import de.halloklick.gemeinsam.Sprache;
 import de.halloklick.gemeinsam.sicherheit.Angemeldet;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -57,9 +59,10 @@ class AnleitungController {
 
     @GetMapping("/api/anleitungen")
     List<AnleitungDto.Kurz> suche(@RequestParam(required = false) String suche,
-            @RequestParam(required = false) AnleitungPlattform plattform, @AuthenticationPrincipal Angemeldet ich) {
+            @RequestParam(required = false) AnleitungPlattform plattform, @AuthenticationPrincipal Angemeldet ich,
+            Locale sprache) {
         pruefeAngeschaltet();
-        return anleitungen.suche(suche, plattform, ich == null ? null : ich.kontoId());
+        return anleitungen.suche(suche, plattform, ich == null ? null : ich.kontoId(), Sprache.von(sprache));
     }
 
     @GetMapping("/api/anleitungen/{id}")

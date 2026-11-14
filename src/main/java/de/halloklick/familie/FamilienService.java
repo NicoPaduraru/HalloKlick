@@ -19,6 +19,7 @@ import de.halloklick.gemeinsam.ApiFehler;
 import de.halloklick.gemeinsam.DatenauskunftBeitrag;
 import de.halloklick.gemeinsam.Einstellungen;
 import de.halloklick.gemeinsam.Schluessel;
+import de.halloklick.gemeinsam.Texte;
 import de.halloklick.konto.GeraetInfo;
 import de.halloklick.konto.GeraeteService;
 import de.halloklick.konto.KontoService;
@@ -43,10 +44,12 @@ public class FamilienService implements DatenauskunftBeitrag {
     private final GeraeteService geraete;
     private final Einstellungen einstellungen;
     private final Clock uhr;
+    private final Texte texte;
 
     FamilienService(FamilieRepository familien, MitgliedschaftRepository mitgliedschaften,
             EinladungRepository einladungen, KontoService konten, GeraeteService geraete,
-            Einstellungen einstellungen, Clock uhr) {
+            Einstellungen einstellungen, Clock uhr, Texte texte) {
+        this.texte = texte;
         this.familien = familien;
         this.mitgliedschaften = mitgliedschaften;
         this.einladungen = einladungen;
@@ -121,7 +124,7 @@ public class FamilienService implements DatenauskunftBeitrag {
                 .orElseThrow(() -> ApiFehler.nichtGefunden("Diese Familie gibt es nicht."));
         List<FamilieDto.Mitglied> mitglieder = mitgliedschaften.findByIdFamilieIdOrderByBeigetretenAm(familieId)
                 .stream()
-                .map(m -> new FamilieDto.Mitglied(m.getKontoId(), konten.anzeigenameVon(m.getKontoId()),
+                .map(m -> new FamilieDto.Mitglied(m.getKontoId(), texte.hier(konten.anzeigenameVon(m.getKontoId())),
                         m.getRolle(), m.getRolle() == Rolle.SENIOR ? geraete.geraeteVon(m.getKontoId()) : List.of()))
                 .toList();
         return new FamilieDto.Details(familie.getId(), familie.getName(), meineRolle, mitglieder);

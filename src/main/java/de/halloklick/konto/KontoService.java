@@ -6,12 +6,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.halloklick.gemeinsam.ApiFehler;
+import de.halloklick.gemeinsam.Sprache;
 
 /** Öffentliche Tür des Moduls "konto". Andere Module sprechen nur mit dieser Klasse. */
 @Service
@@ -41,6 +43,7 @@ public class KontoService {
         }
         Konto konto = Konto.neuerAngehoeriger(adresse, passwortHasher.encode(passwort), anzeigename.strip(),
                 uhr.instant());
+        konto.setSprache(aktuelleSprache().kuerzel());
         return KontoInfo.von(konten.save(konto));
     }
 
@@ -58,7 +61,9 @@ public class KontoService {
 
     @Transactional
     UUID erstelleSeniorKonto() {
-        return konten.save(Konto.neuerSenior(uhr.instant())).getId();
+        Konto konto = Konto.neuerSenior(uhr.instant());
+        konto.setSprache(aktuelleSprache().kuerzel());
+        return konten.save(konto).getId();
     }
 
     @Transactional(readOnly = true)
@@ -75,6 +80,21 @@ public class KontoService {
     @Transactional
     public void setzeAnzeigename(UUID kontoId, String anzeigename) {
         konten.findById(kontoId).ifPresent(konto -> konto.setAnzeigename(anzeigename.strip()));
+    }
+
+    /** In welcher Sprache dieses Konto die App benutzt. Unbekannt heißt Deutsch. */
+    @Transactional(readOnly = true)
+    public Sprache spracheVon(UUID kontoId) {
+        return konten.findById(kontoId).map(konto -> Sprache.von(konto.getSprache())).orElse(Sprache.DE);
+    }
+
+    @Transactional
+    public void setzeSprache(UUID kontoId, Sprache sprache) {
+        konten.findById(kontoId).ifPresent(konto -> konto.setSprache(sprache.kuerzel()));
+    }
+
+    private static Sprache aktuelleSprache() {
+        return Sprache.von(LocaleContextHolder.getLocale());
     }
 
     /** Löscht das Konto und alles, was daran hängt (Geräte, Checks, Anfragen, Mitgliedschaften). */

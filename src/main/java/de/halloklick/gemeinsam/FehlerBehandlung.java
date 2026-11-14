@@ -21,14 +21,20 @@ public class FehlerBehandlung extends ResponseEntityExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(FehlerBehandlung.class);
 
+    private final Texte texte;
+
+    FehlerBehandlung(Texte texte) {
+        this.texte = texte;
+    }
+
     @ExceptionHandler(ApiFehler.class)
     ProblemDetail apiFehler(ApiFehler fehler) {
-        return ProblemDetail.forStatusAndDetail(fehler.status(), fehler.getMessage());
+        return ProblemDetail.forStatusAndDetail(fehler.status(), texte.hier(fehler.getMessage()));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     ProblemDetail keinZugriff(AccessDeniedException fehler) {
-        return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Das ist für Sie nicht erlaubt.");
+        return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, texte.hier("Das ist für Sie nicht erlaubt."));
     }
 
     @ExceptionHandler(Exception.class)
@@ -37,7 +43,7 @@ public class FehlerBehandlung extends ResponseEntityExceptionHandler {
         LOG.error("Unerwarteter Fehler vom Typ {}", fehler.getClass().getName());
         LOG.debug("Einzelheiten zum unerwarteten Fehler", fehler);
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR,
-                "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.");
+                texte.hier("Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später noch einmal."));
     }
 
     @Override
@@ -47,7 +53,7 @@ public class FehlerBehandlung extends ResponseEntityExceptionHandler {
                 .findFirst()
                 .map(f -> f.getDefaultMessage())
                 .orElse("Die Eingabe ist nicht gültig.");
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, text);
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, texte.hier(text));
         return ResponseEntity.badRequest().body(problem);
     }
 
@@ -55,7 +61,7 @@ public class FehlerBehandlung extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException fehler,
             HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.PAYLOAD_TOO_LARGE,
-                "Das Foto ist zu groß. Es darf höchstens 5 MB haben.");
+                texte.hier("Das Foto ist zu groß. Es darf höchstens 5 MB haben."));
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(problem);
     }
 }

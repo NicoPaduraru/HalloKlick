@@ -22,6 +22,9 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.halloklick.gemeinsam.Sprache;
+import de.halloklick.gemeinsam.Texte;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
@@ -36,7 +39,7 @@ public class SicherheitsKonfiguration {
 
     @Bean
     SecurityFilterChain sicherheitsKette(HttpSecurity http, GeraeteAnmelder anmelder,
-            SecurityContextRepository kontextSpeicher, ObjectMapper json) throws Exception {
+            SecurityContextRepository kontextSpeicher, ObjectMapper json, Texte texte) throws Exception {
         http
             .csrf(csrf -> csrf
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -67,9 +70,9 @@ public class SicherheitsKonfiguration {
                 // Die Dateien der Web-App
                 .anyRequest().permitAll())
             .exceptionHandling(fehler -> fehler
-                .authenticationEntryPoint((anfrage, antwort, e) -> schreibe(json, antwort,
+                .authenticationEntryPoint((anfrage, antwort, e) -> schreibe(json, texte, anfrage, antwort,
                         HttpStatus.UNAUTHORIZED, "Bitte melden Sie sich an."))
-                .accessDeniedHandler((anfrage, antwort, e) -> schreibe(json, antwort,
+                .accessDeniedHandler((anfrage, antwort, e) -> schreibe(json, texte, anfrage, antwort,
                         HttpStatus.FORBIDDEN, "Das ist für Sie nicht erlaubt.")))
             .headers(kopf -> kopf
                 .contentSecurityPolicy(csp -> csp.policyDirectives(
@@ -95,11 +98,13 @@ public class SicherheitsKonfiguration {
         return new BCryptPasswordEncoder(12);
     }
 
-    private static void schreibe(ObjectMapper json, HttpServletResponse antwort, HttpStatus status, String text)
+    private static void schreibe(ObjectMapper json, Texte texte, HttpServletRequest anfrage,
+            HttpServletResponse antwort, HttpStatus status, String text)
             throws IOException {
         antwort.setStatus(status.value());
         antwort.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
         antwort.setCharacterEncoding("UTF-8");
-        json.writeValue(antwort.getWriter(), ProblemDetail.forStatusAndDetail(status, text));
+        json.writeValue(antwort.getWriter(), ProblemDetail.forStatusAndDetail(status,
+                texte.in(Sprache.von(anfrage), text)));
     }
 }

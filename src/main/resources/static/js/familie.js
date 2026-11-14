@@ -1,13 +1,13 @@
 // Die Bildschirme für Angehörige: Anmelden, Familie, QR-Einladung, Hilfeanfragen, Anleitungs-Editor.
 
-import { api, datum, ersetze, fehlerbox, h, ladeIch, zeige, zeigeLaden, zustand } from './basis.js';
-
-const ROLLEN = { SENIOR: 'Elternteil', ANGEHOERIGER: 'Angehöriger', VERWALTER: 'Angehöriger (Verwalter)' };
-const PLATTFORMEN = { ANDROID: 'Android', IOS: 'iPhone', SONSTIGE: 'anderes Gerät', ALLE: 'Alle Handys' };
+import { ansicht, api, datum, ersetze, fehlerbox, h, ladeIch, zeige, zeigeLaden, zustand } from './basis.js';
+import { sprache, t } from './sprache.js';
 
 export async function familie() {
+  const lauf = ansicht.nummer();
   zeigeLaden();
   const ich = await ladeIch(true);
+  if (!ansicht.gilt(lauf)) return;
   if (!ich || ich.typ !== 'ANGEHOERIGER') {
     zeigeAnmeldung(Boolean(ich));
     return;
@@ -15,15 +15,16 @@ export async function familie() {
   let familien;
   try {
     familien = await api('GET', '/api/familien');
+    if (!ansicht.gilt(lauf)) return;
   } catch (e) {
-    zeige('Für Angehörige', fehlerbox(e.message));
+    zeige(t('fam.titel'), fehlerbox(e.message));
     return;
   }
   if (familien.length === 0) {
     zeigeFamilieAnlegen(ich);
     return;
   }
-  await zeigeUebersicht(ich, familien);
+  await zeigeUebersicht(ich, familien, lauf);
 }
 
 // ---------- Anmelden und Registrieren ----------
@@ -43,6 +44,8 @@ function zeigeAnmeldung(istSeniorGeraet, neuesKonto = false) {
       knopf.disabled = true;
       try {
         zustand.ich = await api('POST', neuesKonto ? '/api/auth/registrieren' : '/api/auth/anmelden', { json: daten });
+        // Die gewählte Sprache am Konto merken, damit Benachrichtigungen in dieser Sprache kommen
+        api('PUT', '/api/ich/sprache', { json: { sprache: sprache() } }).catch(() => {});
         familie();
       } catch (e) {
         knopf.disabled = false;
@@ -50,30 +53,29 @@ function zeigeAnmeldung(istSeniorGeraet, neuesKonto = false) {
       }
     },
   },
-    neuesKonto && feld('anzeigename', 'Ihr Name', 'text', { maxlength: '80', autocomplete: 'name' }),
-    feld('email', 'E-Mail-Adresse', 'email', { maxlength: '254', autocomplete: 'email' }),
-    feld('passwort', neuesKonto ? 'Passwort (mindestens 10 Zeichen)' : 'Passwort', 'password', {
+    neuesKonto && feld('anzeigename', t('fam.name'), 'text', { maxlength: '80', autocomplete: 'name' }),
+    feld('email', t('fam.email'), 'email', { maxlength: '254', autocomplete: 'email' }),
+    feld('passwort', neuesKonto ? t('fam.passwortNeu') : t('fam.passwort'), 'password', {
       minlength: neuesKonto ? '10' : null, maxlength: '72',
       autocomplete: neuesKonto ? 'new-password' : 'current-password',
     }),
     meldung,
-    h('button', { type: 'submit' }, neuesKonto ? 'Konto anlegen' : 'Anmelden'),
+    h('button', { type: 'submit' }, neuesKonto ? t('fam.kontoAnlegen') : t('fam.anmelden')),
   );
 
-  zeige(neuesKonto ? 'Konto für Angehörige anlegen' : 'Für Angehörige', [
-    h('p', {}, 'Hier verbinden Sie sich mit Ihren Eltern, sehen ihre Hilfeanfragen und schreiben eigene Anleitungen.'),
-    istSeniorGeraet && h('p', { class: 'hinweisbox' },
-      'Dieses Gerät wird gerade von einem Elternteil benutzt. Am besten melden Sie sich auf Ihrem eigenen Gerät an.'),
+  zeige(neuesKonto ? t('fam.kontoTitel') : t('fam.titel'), [
+    h('p', {}, t('fam.einleitung')),
+    istSeniorGeraet && h('p', { class: 'hinweisbox' }, t('fam.seniorGeraet')),
     formular,
     h('button', { class: 'knopf-zweit', type: 'button', onclick: () => zeigeAnmeldung(istSeniorGeraet, !neuesKonto) },
-      neuesKonto ? 'Ich habe schon ein Konto' : 'Neues Konto anlegen'),
+      neuesKonto ? t('fam.habeKonto') : t('fam.neuesKonto')),
   ]);
 }
 
 function zeigeFamilieAnlegen(ich) {
   const meldung = h('div', {});
-  zeige('Familie anlegen', [
-    h('p', {}, `Hallo ${ich.anzeigename}. Legen Sie zuerst Ihre Familie an. Danach können Sie Ihre Eltern einladen.`),
+  zeige(t('fam.anlegen.titel'), [
+    h('p', {}, t('fam.anlegen.text', { name: ich.anzeigename })),
     h('form', {
       onsubmit: async (ereignis) => {
         ereignis.preventDefault();
@@ -85,10 +87,10 @@ function zeigeFamilieAnlegen(ich) {
         }
       },
     },
-      h('label', { for: 'name' }, 'Name der Familie'),
-      h('input', { id: 'name', name: 'name', type: 'text', required: true, maxlength: '80', placeholder: 'zum Beispiel: Familie Müller' }),
+      h('label', { for: 'name' }, t('fam.anlegen.feld')),
+      h('input', { id: 'name', name: 'name', type: 'text', required: true, maxlength: '80', placeholder: t('fam.anlegen.beispiel') }),
       meldung,
-      h('button', { type: 'submit' }, 'Familie anlegen'),
+      h('button', { type: 'submit' }, t('fam.anlegen.knopf')),
     ),
     kontoBereich(),
   ]);
@@ -96,7 +98,7 @@ function zeigeFamilieAnlegen(ich) {
 
 // ---------- Übersicht ----------
 
-async function zeigeUebersicht(ich, familien) {
+async function zeigeUebersicht(ich, familien, lauf) {
   const bereiche = [];
   for (const kurz of familien) {
     try {
@@ -110,8 +112,9 @@ async function zeigeUebersicht(ich, familien) {
       bereiche.push(fehlerbox(e.message));
     }
   }
-  zeige('Für Angehörige', [
-    h('p', {}, `Angemeldet als ${ich.anzeigename}.`),
+  if (!ansicht.gilt(lauf)) return;
+  zeige(t('fam.titel'), [
+    h('p', {}, t('fam.angemeldetAls', { name: ich.anzeigename })),
     ...bereiche,
     benachrichtigungsBereich(),
     kontoBereich(),
@@ -123,7 +126,7 @@ function familienBereich(details, anfragen, anleitungen) {
 
   // --- Offene Hilfeanfragen ---
   const anfragenListe = anfragen.length === 0
-    ? h('p', {}, 'Im Moment gibt es keine offenen Anfragen.')
+    ? h('p', {}, t('fam.anfragen.keine'))
     : anfragen.map((anfrage) => h('div', { class: 'eintrag' },
       h('p', {}, h('strong', {}, anfrage.vonName), ': ', anfrage.themaText),
       h('p', { class: 'leise' }, datum(anfrage.erstelltAm)),
@@ -139,11 +142,11 @@ function familienBereich(details, anfragen, anleitungen) {
             ereignis.target.replaceWith(fehlerbox(e.message));
           }
         },
-      }, 'Als erledigt markieren')));
+      }, t('fam.anfragen.erledigt'))));
 
   // --- Mitglieder und Geräte ---
   const mitglieder = details.mitglieder.map((mitglied) => h('div', { class: 'eintrag' },
-    h('p', {}, h('strong', {}, mitglied.anzeigename), ' · ', ROLLEN[mitglied.rolle]),
+    h('p', {}, h('strong', {}, mitglied.anzeigename), ' · ', t('rolle.' + mitglied.rolle)),
     mitglied.geraete.map((geraet) => geraeteZeile(geraet, verwalter))));
 
   // --- Einladung ---
@@ -156,52 +159,53 @@ function familienBereich(details, anfragen, anleitungen) {
           json: { nameFuerSenior: new FormData(ereignis.target).get('nameFuerSenior') },
         });
         einladung.replaceChildren(
-          h('p', {}, 'So geht es auf dem Handy Ihrer Mutter oder Ihres Vaters:'),
+          h('p', {}, t('fam.einladen.so')),
           h('ol', {},
-            h('li', {}, 'Mit der Handy-Kamera diesen QR-Code scannen und den Link öffnen.'),
-            h('li', {}, 'Oder in der App auf „Familie fragen“ tippen und diesen Code eintippen:')),
-          h('img', { class: 'qr', alt: 'QR-Code für die Einladung', src: 'data:image/svg+xml,' + encodeURIComponent(neu.qrSvg) }),
+            h('li', {}, t('fam.einladen.schritt1')),
+            h('li', {}, t('fam.einladen.schritt2'))),
+          h('img', { class: 'qr', alt: t('fam.einladen.qrAlt'), src: 'data:image/svg+xml,' + encodeURIComponent(neu.qrSvg) }),
           h('p', { class: 'einladungscode' }, neu.code),
-          h('p', { class: 'leise' }, `Der Code gilt einmal und nur bis ${datum(neu.gueltigBis)} (15 Minuten).`));
+          h('p', { class: 'leise' }, t('fam.einladen.gilt', { datum: datum(neu.gueltigBis) })));
       } catch (e) {
         einladung.replaceChildren(fehlerbox(e.message));
       }
     },
   },
-    h('label', { for: 'name-' + details.id }, 'Wie soll die Person heißen?'),
-    h('input', { id: 'name-' + details.id, name: 'nameFuerSenior', type: 'text', maxlength: '80', placeholder: 'zum Beispiel: Mama' }),
-    h('button', { type: 'submit' }, 'Einladung mit QR-Code erzeugen'));
+    h('label', { for: 'name-' + details.id }, t('fam.einladen.feld')),
+    h('input', { id: 'name-' + details.id, name: 'nameFuerSenior', type: 'text', maxlength: '80', placeholder: t('fam.einladen.beispiel') }),
+    h('button', { type: 'submit' }, t('fam.einladen.knopf')));
 
   // --- Eigene Anleitungen ---
   const anleitungsListe = anleitungen.length === 0
-    ? h('p', {}, 'Noch keine eigenen Anleitungen.')
+    ? h('p', {}, t('fam.anl.keine'))
     : anleitungen.map((anleitung) => h('div', { class: 'eintrag' },
-      h('p', {}, h('strong', {}, anleitung.titel), ' · ', PLATTFORMEN[anleitung.plattform],
-        ` · ${anleitung.schritte.length} Schritte`),
+      h('p', {}, h('strong', {}, anleitung.titel), ' · ', t('plattform.' + anleitung.plattform),
+        ' · ', t('fam.anl.schritte', { anzahl: anleitung.schritte.length })),
       h('a', { class: 'knopf knopf-zweit knopf-klein', href: `#/familie/anleitung/${details.id}/${anleitung.id}` },
-        'Bearbeiten')));
+        t('fam.anl.bearbeiten'))));
 
   return h('section', {},
     h('h2', {}, details.name),
-    h('div', { class: 'karte' }, h('h3', {}, 'Offene Hilfeanfragen'), anfragenListe),
-    h('div', { class: 'karte' }, h('h3', {}, 'Mitglieder'), mitglieder),
-    verwalter && h('div', { class: 'karte' }, h('h3', {}, 'Eltern einladen'), einladungsFormular, einladung),
+    h('div', { class: 'karte' }, h('h3', {}, t('fam.anfragen.titel')), anfragenListe),
+    h('div', { class: 'karte' }, h('h3', {}, t('fam.mitglieder')), mitglieder),
+    verwalter && h('div', { class: 'karte' }, h('h3', {}, t('fam.einladen.titel')), einladungsFormular, einladung),
     h('div', { class: 'karte' },
-      h('h3', {}, 'Eigene Anleitungen'),
-      h('p', { class: 'leise' }, 'Zum Beispiel: „So rufst du mich per WhatsApp an“. Nur Ihre Familie sieht sie.'),
+      h('h3', {}, t('fam.anl.titel')),
+      h('p', { class: 'leise' }, t('fam.anl.erklaerung')),
       anleitungsListe,
-      h('a', { class: 'knopf knopf-zweit', href: `#/familie/anleitung/${details.id}` }, 'Neue Anleitung schreiben')));
+      h('a', { class: 'knopf knopf-zweit', href: `#/familie/anleitung/${details.id}` }, t('fam.anl.neu'))));
 }
 
 function geraeteZeile(geraet, verwalter) {
   const zeile = h('div', {});
   const normal = () => ersetze(zeile,
-    h('p', { class: 'leise' }, `${PLATTFORMEN[geraet.plattform]} · zuletzt benutzt: ${datum(geraet.zuletztGesehen)}`,
-      geraet.widerrufen ? ' · gesperrt' : ''),
+    h('p', { class: 'leise' },
+      t('fam.geraet.zeile', { plattform: t('plattform.' + geraet.plattform), datum: datum(geraet.zuletztGesehen) }),
+      geraet.widerrufen ? ' · ' + t('fam.geraet.gesperrt') : ''),
     verwalter && !geraet.widerrufen && h('button', { class: 'knopf-gefahr knopf-klein', type: 'button', onclick: nachfragen },
-      'Handy verloren? Gerät sperren'));
+      t('fam.geraet.sperren')));
   const nachfragen = () => zeile.replaceChildren(
-    h('p', { class: 'fehlerbox' }, 'Dieses Gerät wirklich sperren? Es kann danach nicht mehr auf die Familie zugreifen.'),
+    h('p', { class: 'fehlerbox' }, t('fam.geraet.wirklich')),
     h('button', {
       class: 'knopf-gefahr knopf-klein', type: 'button',
       onclick: async () => {
@@ -212,8 +216,8 @@ function geraeteZeile(geraet, verwalter) {
           zeile.replaceChildren(fehlerbox(e.message));
         }
       },
-    }, 'Ja, sperren'),
-    h('button', { class: 'knopf-klein', type: 'button', onclick: normal }, 'Nein'));
+    }, t('fam.geraet.ja')),
+    h('button', { class: 'knopf-klein', type: 'button', onclick: normal }, t('allgemein.nein')));
   normal();
   return zeile;
 }
@@ -230,18 +234,15 @@ function benachrichtigungsBereich() {
   const moeglich = schluessel && 'serviceWorker' in navigator && 'PushManager' in window;
   const meldung = h('div', {});
   return h('div', { class: 'karte' },
-    h('h3', {}, 'Benachrichtigungen'),
-    !moeglich && h('p', {}, schluessel
-      ? 'Dieser Browser kann keine Benachrichtigungen empfangen. Auf dem iPhone geht es, wenn Sie die App zum Home-Bildschirm hinzufügen.'
-      : 'Benachrichtigungen sind auf diesem Server noch nicht eingerichtet. Neue Anfragen sehen Sie hier in der App.'),
-    moeglich && h('p', {}, 'Lassen Sie sich benachrichtigen, wenn Ihre Eltern um Hilfe bitten.'),
+    h('h3', {}, t('fam.push.titel')),
+    !moeglich && h('p', {}, schluessel ? t('fam.push.nichtMoeglich') : t('fam.push.nichtEingerichtet')),
+    moeglich && h('p', {}, t('fam.push.text')),
     moeglich && h('button', {
       class: 'knopf-zweit', type: 'button',
       onclick: async () => {
         try {
           if (await Notification.requestPermission() !== 'granted') {
-            meldung.replaceChildren(h('p', { class: 'hinweisbox' },
-              'Sie haben Benachrichtigungen nicht erlaubt. Sie können das in den Einstellungen Ihres Browsers ändern.'));
+            meldung.replaceChildren(h('p', { class: 'hinweisbox' }, t('fam.push.abgelehnt')));
             return;
           }
           const dienst = await navigator.serviceWorker.ready;
@@ -252,18 +253,18 @@ function benachrichtigungsBereich() {
           await api('POST', '/api/push-abos', {
             json: { endpoint: daten.endpoint, p256dh: daten.keys.p256dh, auth: daten.keys.auth },
           });
-          meldung.replaceChildren(h('p', { class: 'hinweisbox' }, 'Benachrichtigungen sind auf diesem Gerät eingeschaltet.'));
+          meldung.replaceChildren(h('p', { class: 'hinweisbox' }, t('fam.push.an')));
         } catch (e) {
-          meldung.replaceChildren(fehlerbox('Das Einschalten hat nicht geklappt. ' + (e.status ? e.message : '')));
+          meldung.replaceChildren(fehlerbox(t('fam.push.fehler') + (e.status ? ' ' + e.message : '')));
         }
       },
-    }, 'Auf diesem Gerät einschalten'),
+    }, t('fam.push.knopf')),
     meldung);
 }
 
 function kontoBereich() {
   return h('div', { class: 'karte' },
-    h('h3', {}, 'Mein Konto'),
+    h('h3', {}, t('fam.konto.titel')),
     h('button', {
       class: 'knopf-zweit', type: 'button',
       onclick: async () => {
@@ -274,13 +275,14 @@ function kontoBereich() {
           location.hash = '#/';
         }
       },
-    }, 'Abmelden'),
-    h('a', { class: 'knopf knopf-zweit', href: '#/meine-daten' }, 'Meine Daten ansehen oder löschen'));
+    }, t('fam.konto.abmelden')),
+    h('a', { class: 'knopf knopf-zweit', href: '#/meine-daten' }, t('fam.konto.daten')));
 }
 
 // ---------- Anleitungs-Editor ----------
 
 export async function anleitungBearbeiten(familieId, anleitungId) {
+  const lauf = ansicht.nummer();
   zeigeLaden();
   let vorhandene = null;
   try {
@@ -289,14 +291,16 @@ export async function anleitungBearbeiten(familieId, anleitungId) {
       vorhandene = alle.find((eintrag) => eintrag.id === anleitungId) || null;
     }
   } catch (e) {
-    zeige('Anleitung', fehlerbox(e.message), { zurueck: '#/familie' });
+    zeige(t('anleitung.titel'), fehlerbox(e.message), { zurueck: '#/familie' });
     return;
   }
+
+  if (!ansicht.gilt(lauf)) return;
 
   const meldung = h('div', {});
   const schrittListe = h('div', {});
   const schrittFeld = (text = '') => {
-    const eingabe = h('textarea', { maxlength: '600', 'aria-label': 'Text des Schritts' });
+    const eingabe = h('textarea', { maxlength: '600', 'aria-label': t('editor.schrittText') });
     eingabe.value = text;
     const block = h('div', { class: 'eintrag' },
       h('p', { class: 'schritt-zaehler' }),
@@ -307,27 +311,27 @@ export async function anleitungBearbeiten(familieId, anleitungId) {
           block.remove();
           nummeriere();
         },
-      }, 'Diesen Schritt entfernen'));
+      }, t('editor.entfernen')));
     return block;
   };
   const nummeriere = () => [...schrittListe.children].forEach((block, stelle) => {
-    block.querySelector('.schritt-zaehler').textContent = `Schritt ${stelle + 1}`;
+    block.querySelector('.schritt-zaehler').textContent = t('editor.schritt', { nummer: stelle + 1 });
   });
   (vorhandene ? vorhandene.schritte.map((schritt) => schritt.text) : ['']).forEach(
     (text) => schrittListe.append(schrittFeld(text)));
   nummeriere();
 
-  const titel = h('input', { id: 'titel', type: 'text', required: true, maxlength: '120', placeholder: 'So rufst du mich per WhatsApp an' });
+  const titel = h('input', { id: 'titel', type: 'text', required: true, maxlength: '120', placeholder: t('editor.beispiel') });
   titel.value = vorhandene ? vorhandene.titel : '';
   const plattform = h('select', { id: 'plattform' },
-    Object.entries({ ALLE: 'Alle Handys', ANDROID: 'Android', IOS: 'iPhone' }).map(([wert, text]) =>
-      h('option', { value: wert, selected: vorhandene && vorhandene.plattform === wert }, text)));
+    ['ALLE', 'ANDROID', 'IOS'].map((wert) =>
+      h('option', { value: wert, selected: vorhandene && vorhandene.plattform === wert }, t('plattform.' + wert))));
 
   const loeschbereich = h('div', {});
   const zeigeLoeschen = () => ersetze(loeschbereich, vorhandene && h('button', {
     class: 'knopf-gefahr', type: 'button',
     onclick: () => loeschbereich.replaceChildren(
-      h('p', { class: 'fehlerbox' }, 'Diese Anleitung wirklich löschen? Das kann man nicht rückgängig machen.'),
+      h('p', { class: 'fehlerbox' }, t('editor.wirklich')),
       h('button', {
         class: 'knopf-gefahr', type: 'button',
         onclick: async () => {
@@ -338,19 +342,19 @@ export async function anleitungBearbeiten(familieId, anleitungId) {
             loeschbereich.replaceChildren(fehlerbox(e.message));
           }
         },
-      }, 'Ja, löschen'),
-      h('button', { type: 'button', onclick: zeigeLoeschen }, 'Nein, behalten')),
-  }, 'Anleitung löschen'));
+      }, t('editor.jaLoeschen')),
+      h('button', { type: 'button', onclick: zeigeLoeschen }, t('editor.neinBehalten'))),
+  }, t('editor.loeschen')));
   zeigeLoeschen();
 
-  zeige(vorhandene ? 'Anleitung bearbeiten' : 'Neue Anleitung', [
-    h('p', {}, 'Schreiben Sie kurze Sätze. Pro Schritt nur eine Sache. Ihre Eltern sehen immer nur einen Schritt auf einmal.'),
+  zeige(vorhandene ? t('editor.titelBearbeiten') : t('editor.titelNeu'), [
+    h('p', {}, t('editor.hinweis')),
     h('form', {
       onsubmit: async (ereignis) => {
         ereignis.preventDefault();
         const schritte = [...schrittListe.querySelectorAll('textarea')].map((feld) => feld.value.trim()).filter(Boolean);
         if (schritte.length === 0) {
-          meldung.replaceChildren(fehlerbox('Bitte schreiben Sie mindestens einen Schritt.'));
+          meldung.replaceChildren(fehlerbox(t('editor.mindestens')));
           return;
         }
         const daten = { titel: titel.value, plattform: plattform.value, schritte };
@@ -366,9 +370,9 @@ export async function anleitungBearbeiten(familieId, anleitungId) {
         }
       },
     },
-      h('label', { for: 'titel' }, 'Titel'),
+      h('label', { for: 'titel' }, t('editor.feldTitel')),
       titel,
-      h('label', { for: 'plattform' }, 'Für welches Handy?'),
+      h('label', { for: 'plattform' }, t('editor.feldHandy')),
       plattform,
       schrittListe,
       h('button', {
@@ -377,9 +381,9 @@ export async function anleitungBearbeiten(familieId, anleitungId) {
           schrittListe.append(schrittFeld());
           nummeriere();
         },
-      }, 'Schritt hinzufügen'),
+      }, t('editor.hinzufuegen')),
       meldung,
-      h('button', { type: 'submit' }, 'Speichern'),
+      h('button', { type: 'submit' }, t('editor.speichern')),
     ),
     loeschbereich,
   ], { zurueck: '#/familie' });

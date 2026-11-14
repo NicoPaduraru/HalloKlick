@@ -40,7 +40,7 @@ class AnfrageBegrenzungTest {
 
     private final AnfrageBegrenzung begrenzung = new AnfrageBegrenzung(
             new Einstellungen(null, null, null, null, null, null, null, new Einstellungen.Begrenzung(5, 2)),
-            uhr, new ObjectMapper());
+            uhr, new ObjectMapper(), new de.halloklick.gemeinsam.Texte());
 
     private int schicke(String methode, String pfad, String adresse) throws Exception {
         MockHttpServletRequest anfrage = new MockHttpServletRequest(methode, pfad);

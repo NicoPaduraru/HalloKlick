@@ -17,6 +17,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.halloklick.gemeinsam.Einstellungen;
+import de.halloklick.gemeinsam.Sprache;
+import de.halloklick.gemeinsam.Texte;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,8 +41,10 @@ public class AnfrageBegrenzung extends OncePerRequestFilter {
     private final int heikelProMinute;
     private final Clock uhr;
     private final ObjectMapper json;
+    private final Texte texte;
 
-    public AnfrageBegrenzung(Einstellungen einstellungen, Clock uhr, ObjectMapper json) {
+    public AnfrageBegrenzung(Einstellungen einstellungen, Clock uhr, ObjectMapper json, Texte texte) {
+        this.texte = texte;
         this.proMinute = einstellungen.begrenzung().proMinute();
         this.heikelProMinute = einstellungen.begrenzung().heikelProMinute();
         this.uhr = uhr;
@@ -65,7 +69,7 @@ public class AnfrageBegrenzung extends OncePerRequestFilter {
             antwort.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
             antwort.setCharacterEncoding("UTF-8");
             json.writeValue(antwort.getWriter(), ProblemDetail.forStatusAndDetail(HttpStatus.TOO_MANY_REQUESTS,
-                    "Das waren zu viele Versuche. Bitte warten Sie eine Minute."));
+                    texte.in(Sprache.von(anfrage), "Das waren zu viele Versuche. Bitte warten Sie eine Minute.")));
             return;
         }
         kette.doFilter(anfrage, antwort);

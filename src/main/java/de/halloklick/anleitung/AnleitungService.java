@@ -10,11 +10,13 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.halloklick.familie.FamilienService;
 import de.halloklick.gemeinsam.ApiFehler;
+import de.halloklick.gemeinsam.Sprache;
 
 @Service
 public class AnleitungService {
@@ -41,7 +43,7 @@ public class AnleitungService {
      * @param plattform darf null sein: dann alle Handys
      */
     @Transactional(readOnly = true)
-    List<AnleitungDto.Kurz> suche(String suche, AnleitungPlattform plattform, UUID kontoId) {
+    List<AnleitungDto.Kurz> suche(String suche, AnleitungPlattform plattform, UUID kontoId, Sprache sprache) {
         Collection<String> plattformen = plattform == null || plattform == AnleitungPlattform.ALLE
                 ? List.of("ANDROID", "IOS", "ALLE")
                 : List.of(plattform.name(), "ALLE");
@@ -52,8 +54,9 @@ public class AnleitungService {
             text = text.substring(0, 100);
         }
         List<UUID> ids = text.isEmpty()
-                ? anleitungen.alle(plattformen, sichtbareFamilien)
-                : anleitungen.suche(text, "%" + maskiere(text) + "%", plattformen, sichtbareFamilien);
+                ? anleitungen.alle(plattformen, sichtbareFamilien, sprache.kuerzel())
+                : anleitungen.suche(text, "%" + maskiere(text) + "%", plattformen, sichtbareFamilien,
+                        sprache.kuerzel(), sprache.suchKonfiguration());
 
         // Die Datenbank liefert die Reihenfolge, die Entities kommen danach in einem Rutsch
         Map<UUID, Anleitung> geladen = anleitungen.findAllById(ids).stream()
@@ -85,7 +88,8 @@ public class AnleitungService {
             throw ApiFehler.konflikt("Eine Familie kann höchstens " + HOECHSTENS_PRO_FAMILIE
                     + " eigene Anleitungen haben.");
         }
-        Anleitung anleitung = Anleitung.fuerFamilie(familieId, uhr.instant());
+        Anleitung anleitung = Anleitung.fuerFamilie(familieId,
+                Sprache.von(LocaleContextHolder.getLocale()).kuerzel(), uhr.instant());
         anleitung.aendere(titel, kategorie, plattform, schritte);
         return AnleitungDto.Voll.von(anleitungen.save(anleitung));
     }

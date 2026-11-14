@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +18,9 @@ import de.halloklick.check.regel.RegelPruefer;
 import de.halloklick.gemeinsam.ApiFehler;
 import de.halloklick.gemeinsam.DatenauskunftBeitrag;
 import de.halloklick.gemeinsam.Kategorie;
+import de.halloklick.gemeinsam.Sprache;
 import de.halloklick.gemeinsam.Stufe;
+import de.halloklick.gemeinsam.Texte;
 import de.halloklick.ki.KiDienst;
 import de.halloklick.ki.KiEinschaetzung;
 import de.halloklick.ki.KiErgebnis;
@@ -43,9 +46,11 @@ public class CheckService implements DatenauskunftBeitrag {
     private final SicherheitscheckRepository checks;
     private final FeedbackRepository feedbacks;
     private final Clock uhr;
+    private final Texte texte;
 
     CheckService(RegelPruefer regeln, KiDienst ki, BildPruefung bildPruefung, SicherheitscheckRepository checks,
-            FeedbackRepository feedbacks, Clock uhr) {
+            FeedbackRepository feedbacks, Clock uhr, Texte texte) {
+        this.texte = texte;
         this.regeln = regeln;
         this.ki = ki;
         this.bildPruefung = bildPruefung;
@@ -65,14 +70,14 @@ public class CheckService implements DatenauskunftBeitrag {
         }
         RegelErgebnis regel = regeln.pruefe(text);
         // Kostenbremse, Ebene 1: Die KI wird nur gefragt, wenn die Regeln nicht klar einordnen.
-        KiErgebnis kiErgebnis = regel.unklar() ? ki.pruefe(kontoId, PruefEingabe.ausText(text)) : null;
+        KiErgebnis kiErgebnis = regel.unklar() ? ki.pruefe(kontoId, PruefEingabe.ausText(text, antwortSprache())) : null;
         return fuehreZusammen(kontoId, Quelle.TEXT, regel, kiErgebnis);
     }
 
     public CheckErgebnis pruefeBild(UUID kontoId, byte[] datei) {
         byte[] jpeg = bildPruefung.pruefeUndKodiereNeu(datei);
         // Ein Foto muss erst gelesen werden. Das kann nur die KI.
-        KiErgebnis kiErgebnis = ki.pruefe(kontoId, PruefEingabe.ausBild(jpeg));
+        KiErgebnis kiErgebnis = ki.pruefe(kontoId, PruefEingabe.ausBild(jpeg, antwortSprache()));
         if (kiErgebnis.einschaetzung() == null) {
             return nichtGeprueft(kontoId, kiErgebnis);
         }
@@ -129,17 +134,25 @@ public class CheckService implements DatenauskunftBeitrag {
         }
 
         Sicherheitscheck gespeichert = speichere(kontoId, quelle, stufe, kategorie, kiVerwendet);
-        return new CheckErgebnis(gespeichert.getId(), stufe, kategorie, true, Textbausteine.titel(stufe),
-                erklaerung, merkmale, naechsterSchritt, Textbausteine.HINWEIS, zusatzHinweis, kiVerwendet);
+        // Feste Texte werden in die Sprache der Anfrage übersetzt. Texte der KI sind schon in dieser Sprache.
+        return new CheckErgebnis(gespeichert.getId(), stufe, kategorie, true, texte.hier(Textbausteine.titel(stufe)),
+                texte.hier(erklaerung), merkmale.stream().map(texte::hier).toList(), texte.hier(naechsterSchritt),
+                texte.hier(Textbausteine.HINWEIS), texte.hier(zusatzHinweis), kiVerwendet);
     }
 
     /** Foto konnte nicht gelesen werden: ehrlich sagen, dass nichts geprüft wurde. */
     private CheckErgebnis nichtGeprueft(UUID kontoId, KiErgebnis kiErgebnis) {
         Sicherheitscheck gespeichert = speichere(kontoId, Quelle.BILD, Stufe.ORANGE, Kategorie.SONSTIGES, false);
         return new CheckErgebnis(gespeichert.getId(), Stufe.ORANGE, Kategorie.SONSTIGES, false,
-                Textbausteine.FOTO_NICHT_GEPRUEFT_TITEL, Textbausteine.FOTO_NICHT_GEPRUEFT_ERKLAERUNG, List.of(),
-                Textbausteine.naechsterSchritt(Stufe.ORANGE, Kategorie.SONSTIGES), Textbausteine.HINWEIS,
-                Textbausteine.kiNichtVerfuegbar(kiErgebnis.grund()), false);
+                texte.hier(Textbausteine.FOTO_NICHT_GEPRUEFT_TITEL),
+                texte.hier(Textbausteine.FOTO_NICHT_GEPRUEFT_ERKLAERUNG), List.of(),
+                texte.hier(Textbausteine.naechsterSchritt(Stufe.ORANGE, Kategorie.SONSTIGES)),
+                texte.hier(Textbausteine.HINWEIS), texte.hier(Textbausteine.kiNichtVerfuegbar(kiErgebnis.grund())), false);
+    }
+
+    /** In dieser Sprache soll die KI ihre Erklärung schreiben. */
+    private static String antwortSprache() {
+        return Sprache.von(LocaleContextHolder.getLocale()).deutscherName();
     }
 
     private Sicherheitscheck speichere(UUID kontoId, Quelle quelle, Stufe stufe, Kategorie kategorie,

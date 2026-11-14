@@ -109,9 +109,10 @@ class CheckApiTest extends IntegrationsTest {
         verify(kiPruefer).pruefe(eingabe.capture());
         assertThat(eingabe.getValue().text()).isEqualTo(UNKLAR);
         assertThat(eingabe.getValue().jpegBild()).isNull();
-        // Die Eingabe hat gar keine Felder für Name, Konto oder Gerät
+        // Die Eingabe hat gar keine Felder für Name, Konto oder Gerät, nur noch die Antwortsprache
         assertThat(PruefEingabe.class.getRecordComponents()).extracting("name")
-                .containsExactly("text", "jpegBild");
+                .containsExactly("text", "jpegBild", "antwortSprache");
+        assertThat(eingabe.getValue().antwortSprache()).isEqualTo("Deutsch");
     }
 
     @Test

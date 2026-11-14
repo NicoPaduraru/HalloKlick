@@ -16,6 +16,7 @@ Der vollständige Plan steht in [docs/BAUPLAN.md](docs/BAUPLAN.md). Dort heißt 
    („keine typischen Warnzeichen“) oder Rot („sieht nach Betrug aus“), einer einfachen Erklärung und dem
    nächsten Schritt. Es gibt absichtlich kein Grün.
 2. **„Wie mache ich das?“**: Anleitung suchen und Schritt für Schritt durchgehen, passend zu Android oder iPhone.
+   Zu jedem Schritt gibt es ein einfaches Symbol. Es gibt 35 Anleitungen pro Sprache.
 3. **„Familie fragen“**: Eine Hilfeanfrage an die Familie schicken. Der Senior entscheidet selbst, ob er den
    Inhalt mitschickt.
 
@@ -24,6 +25,9 @@ Der vollständige Plan steht in [docs/BAUPLAN.md](docs/BAUPLAN.md). Dort heißt 
 4. Familie anlegen und die Eltern per QR-Code oder Code verbinden.
 5. Hilfeanfragen sehen und als erledigt markieren. Ein verlorenes Handy sperren.
 6. Eigene Anleitungen schreiben, die nur die eigene Familie sieht.
+
+Die App gibt es auf **Deutsch, Englisch und Italienisch**. Die Sprache wählt man oben auf jeder Seite.
+Beim ersten Besuch erklärt eine Hauptseite in einfacher Sprache, was HalloKlick ist.
 
 ## Grundsätze
 
@@ -127,6 +131,33 @@ Zusätzlich sollte ein Ausgabenlimit in der Anthropic Console eingestellt sein.
 Der Vergleich von Opus 5.5 und Haiku 5.5 gegen die Testsammlung steht in `ModellvergleichTest`.
 Er ruft die echte API auf, kostet Geld und läuft nur, wenn man ihn ausdrücklich startet.
 
+## Sprachen
+
+Übersetzt sind die Oberfläche, alle Meldungen des Servers, die Ergebnisse des Sicherheitschecks und die
+Anleitungen. Im Code stehen die Sätze auf Deutsch; der deutsche Satz ist zugleich der Schlüssel für die
+Übersetzung.
+
+Eine neue Sprache hinzufügen:
+
+1. Eintrag in `de.halloklick.gemeinsam.Sprache` ergänzen.
+2. Server-Texte: `src/main/resources/sprachen/<kürzel>.json` (am besten `en.json` kopieren).
+3. Texte der Web-App: `static/js/sprachen/<kürzel>.js` anlegen, in `static/js/sprache.js` eintragen und in
+   `static/sw.js` in die Liste aufnehmen.
+4. Anleitungen in dieser Sprache als neues Flyway-Skript (Vorlage: `V11__anleitungen_englisch.sql`).
+
+`SprachenTest` prüft, dass in jeder Sprache dieselben Texte übersetzt sind und jede Sprache gleich viele
+Anleitungen hat.
+
+**Grenze:** Die Regel-Prüfung des Sicherheitschecks kennt nur deutsche Warnwörter. Nachrichten auf Englisch
+oder Italienisch erkennt sie schlechter (nachgemachte Internetadressen findet sie trotzdem). Impressum und
+Datenschutz gibt es nur auf Deutsch.
+
+### Bilder in den Anleitungen
+
+Die Symbole liegen als SVG-Dateien in `static/bilder`. In der Datenbank steht pro Schritt nur der Name der
+Datei (`bild_pfad`, ohne `.svg`). Es sind gezeichnete Symbole, keine Bildschirmfotos echter Handys.
+Eigene Anleitungen einer Familie haben noch keine Bilder.
+
 ## Betrieb
 
 Alles für den Server liegt im Ordner [betrieb](betrieb): Docker Compose mit Caddy (HTTPS), App und
@@ -141,6 +172,8 @@ Datenbank, eine Vorlage für die Einstellungen und das Backup-Skript. Die Anleit
 - Impressum, Datenschutzerklärung, Verträge zur Auftragsverarbeitung, Prüfung durch eine fachkundige Stelle.
 - Ein Server in Deutschland mit Domain, eingerichtetem Backup und Uptime-Alarm.
 - Die Claude-Anbindung und Web Push sind geschrieben, aber noch nicht gegen die echten Dienste erprobt.
+- Regel-Prüfung für englische und italienische Betrugsnachrichten.
+- Die englischen und italienischen Texte von Muttersprachlern prüfen lassen.
 - Weitere Angehörige zu einer bestehenden Familie hinzufügen (heute gibt es pro Familie einen Angehörigen).
 
 ## Keine Werbung

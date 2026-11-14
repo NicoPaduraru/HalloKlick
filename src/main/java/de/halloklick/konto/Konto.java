@@ -32,6 +32,9 @@ class Konto {
     @Column(nullable = false)
     private Tarif tarif;
 
+    @Column(nullable = false)
+    private String sprache = "de";
+
     @Column(name = "erstellt_am", nullable = false)
     private Instant erstelltAm;
 
@@ -86,6 +89,14 @@ class Konto {
 
     Tarif getTarif() {
         return tarif;
+    }
+
+    String getSprache() {
+        return sprache;
+    }
+
+    void setSprache(String sprache) {
+        this.sprache = sprache;
     }
 
     Instant getErstelltAm() {

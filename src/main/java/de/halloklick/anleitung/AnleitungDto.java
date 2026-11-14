@@ -11,11 +11,14 @@ final class AnleitungDto {
     }
 
     /** Für Suchergebnisse: ohne Schritte. */
-    record Kurz(UUID id, String titel, String kategorie, AnleitungPlattform plattform, AnleitungQuelle quelle) {
+    record Kurz(UUID id, String titel, String kategorie, AnleitungPlattform plattform, AnleitungQuelle quelle,
+            String bildPfad) {
 
         static Kurz von(Anleitung anleitung) {
+            // Das Bild des ersten Schritts dient in der Liste als kleines Erkennungszeichen
+            String bild = anleitung.getSchritte().isEmpty() ? null : anleitung.getSchritte().get(0).getBildPfad();
             return new Kurz(anleitung.getId(), anleitung.getTitel(), anleitung.getKategorie(),
-                    anleitung.getPlattform(), anleitung.getQuelle());
+                    anleitung.getPlattform(), anleitung.getQuelle(), bild);
         }
     }
 

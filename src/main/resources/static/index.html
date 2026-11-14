@@ -14,21 +14,20 @@
 <body>
   <header class="kopf">
     <a class="marke" href="#/">HalloKlick</a>
+    <!-- Sprachwahl: wird von app.js gefüllt -->
+    <nav id="sprachen" class="sprachen"></nav>
   </header>
 
   <main id="app" tabindex="-1">
-    <p class="laden">Einen Moment bitte …</p>
+    <p class="laden">…</p>
   </main>
 
-  <footer class="fuss">
-    <a href="#/meine-daten">Meine Daten</a>
-    <a href="/datenschutz.html">Datenschutz</a>
-    <a href="/impressum.html">Impressum</a>
-  </footer>
+  <!-- Wird von app.js in der gewählten Sprache gefüllt -->
+  <footer id="fuss" class="fuss"></footer>
 
   <noscript>
     <p class="hinweisbox">Diese Seite braucht JavaScript. Bitte schalten Sie JavaScript in Ihrem Browser ein
-      oder fragen Sie Ihre Familie.</p>
+      oder fragen Sie Ihre Familie.<br>This page needs JavaScript.<br>Questa pagina ha bisogno di JavaScript.</p>
   </noscript>
 
   <script type="module" src="/app.js"></script>

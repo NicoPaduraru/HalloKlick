@@ -9,12 +9,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.halloklick.gemeinsam.ApiFehler;
 import de.halloklick.gemeinsam.DatenauskunftBeitrag;
+import de.halloklick.gemeinsam.Sprache;
 import de.halloklick.gemeinsam.sicherheit.Angemeldet;
 import de.halloklick.gemeinsam.sicherheit.GeraeteCookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,6 +46,19 @@ class IchController {
     KontoInfo ich(@AuthenticationPrincipal Angemeldet ich) {
         return konten.finde(ich.kontoId())
                 .orElseThrow(() -> new ApiFehler(HttpStatus.UNAUTHORIZED, "Bitte melden Sie sich an."));
+    }
+
+    record SprachAnfrage(String sprache) {
+    }
+
+    /**
+     * Die Web-App meldet, welche Sprache der Nutzer gewählt hat. Wir merken sie uns am Konto,
+     * damit auch Benachrichtigungen in dieser Sprache ankommen.
+     */
+    @PutMapping("/sprache")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void setzeSprache(@RequestBody SprachAnfrage anfrage, @AuthenticationPrincipal Angemeldet ich) {
+        konten.setzeSprache(ich.kontoId(), Sprache.von(anfrage.sprache()));
     }
 
     /** Datenauskunft: alles, was wir zu diesem Konto gespeichert haben. */

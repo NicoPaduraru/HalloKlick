@@ -22,6 +22,7 @@ import de.halloklick.benachrichtigung.BenachrichtigungsService;
 import de.halloklick.gemeinsam.ApiFehler;
 import de.halloklick.gemeinsam.DatenauskunftBeitrag;
 import de.halloklick.gemeinsam.Einstellungen;
+import de.halloklick.gemeinsam.Texte;
 import de.halloklick.konto.KontoService;
 
 /** "Familie fragen": Der Senior bittet um Hilfe, die Angehörigen sehen und erledigen die Anfrage. */
@@ -45,11 +46,13 @@ public class HilfeanfrageService implements DatenauskunftBeitrag {
     private final ApplicationEventPublisher ereignisse;
     private final Einstellungen einstellungen;
     private final Clock uhr;
+    private final Texte texte;
 
     HilfeanfrageService(HilfeanfrageRepository anfragen, FamilienService familien,
             MitgliedschaftRepository mitgliedschaften, KontoService konten,
             BenachrichtigungsService benachrichtigung, ApplicationEventPublisher ereignisse,
-            Einstellungen einstellungen, Clock uhr) {
+            Einstellungen einstellungen, Clock uhr, Texte texte) {
+        this.texte = texte;
         this.anfragen = anfragen;
         this.familien = familien;
         this.mitgliedschaften = mitgliedschaften;
@@ -98,7 +101,7 @@ public class HilfeanfrageService implements DatenauskunftBeitrag {
     public void benachrichtigeAngehoerige(HilfeanfrageErstellt ereignis) {
         // In der Benachrichtigung steht nur, WER fragt und das Thema. Nie der geteilte Inhalt.
         benachrichtigung.sende(familien.angehoerigeVon(ereignis.familieId()),
-                "Neue Hilfeanfrage", ereignis.vonName() + ": " + ereignis.thema().text());
+                "Neue Hilfeanfrage", ereignis.vonName() + ": ", ereignis.thema().text());
     }
 
     @Transactional(readOnly = true)
@@ -139,7 +142,8 @@ public class HilfeanfrageService implements DatenauskunftBeitrag {
 
     private FamilieDto.Anfrage alsDto(Hilfeanfrage anfrage) {
         return new FamilieDto.Anfrage(anfrage.getId(), anfrage.getFamilieId(),
-                konten.anzeigenameVon(anfrage.getVonKontoId()), anfrage.getThema(), anfrage.getThema().text(),
+                texte.hier(konten.anzeigenameVon(anfrage.getVonKontoId())), anfrage.getThema(),
+                texte.hier(anfrage.getThema().text()),
                 anfrage.getGeteilterText(), anfrage.getStatus(), anfrage.getErstelltAm());
     }
 

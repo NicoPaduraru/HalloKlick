@@ -470,3 +470,99 @@ pre.daten {
   margin: 0 auto;
   padding: 1rem;
 }
+
+/* ---------- Sprachwahl: gut sichtbar oben auf jeder Seite ---------- */
+
+.kopf {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+.sprachen {
+  display: flex;
+  gap: 0.4rem;
+}
+
+button.sprach-knopf {
+  width: auto;
+  min-height: 48px;
+  margin: 0;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.85rem;
+  background: transparent;
+  border: 2px solid #9db6d6;
+  color: #fff;
+}
+
+button.sprach-knopf:hover {
+  background: var(--blau-dunkel);
+}
+
+button.sprach-knopf.gewaehlt {
+  background: #fff;
+  border-color: #fff;
+  color: var(--blau);
+}
+
+/* ---------- Bilder in den Anleitungen und auf der Hauptseite ---------- */
+
+.schritt-text p {
+  margin: 0;
+}
+
+.schritt-bild {
+  display: block;
+  width: 9rem;
+  height: 9rem;
+  margin: 0 auto 1rem;
+}
+
+.knopf-mit-bild {
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+.knopf-mit-bild span {
+  display: flex;
+  flex-direction: column;
+}
+
+.listen-bild {
+  width: 3rem;
+  height: 3rem;
+  flex: none;
+}
+
+.karte-mit-bild {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+
+.karte-mit-bild h3 {
+  margin: 0 0 0.3rem;
+}
+
+.karte-mit-bild p {
+  margin: 0;
+}
+
+.symbol {
+  margin-top: 0.2rem;
+  width: 4rem;
+  height: 4rem;
+  flex: none;
+}
+
+.gross {
+  font-size: 1.2rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem;
+}

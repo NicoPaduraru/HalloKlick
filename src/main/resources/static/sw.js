@@ -2,7 +2,7 @@
 // Verbindungen bereit und zeigt Benachrichtigungen (Web Push) an.
 //
 // Bei jeder Änderung an den Dateien der Oberfläche die Versionsnummer erhöhen.
-const VERSION = 'halloklick-v1';
+const VERSION = 'halloklick-v3';
 
 const OBERFLAECHE = [
   '/',
@@ -11,6 +11,10 @@ const OBERFLAECHE = [
   '/js/basis.js',
   '/js/senior.js',
   '/js/familie.js',
+  '/js/sprache.js',
+  '/js/sprachen/de.js',
+  '/js/sprachen/en.js',
+  '/js/sprachen/it.js',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',

@@ -22,6 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.halloklick.gemeinsam.ApiFehler;
 import de.halloklick.gemeinsam.DatenauskunftBeitrag;
 import de.halloklick.gemeinsam.Einstellungen;
+import de.halloklick.gemeinsam.Sprache;
+import de.halloklick.gemeinsam.Texte;
 import de.halloklick.konto.KontoService;
 
 /**
@@ -45,9 +47,11 @@ public class BenachrichtigungsService implements DatenauskunftBeitrag {
     private final Einstellungen einstellungen;
     private final ObjectMapper json;
     private final Clock uhr;
+    private final Texte texte;
 
     BenachrichtigungsService(PushAboRepository abos, WebPushSender push, ObjectProvider<JavaMailSender> mail,
-            KontoService konten, Einstellungen einstellungen, ObjectMapper json, Clock uhr) {
+            KontoService konten, Einstellungen einstellungen, ObjectMapper json, Clock uhr, Texte texte) {
+        this.texte = texte;
         this.abos = abos;
         this.push = push;
         this.mail = mail;
@@ -59,12 +63,16 @@ public class BenachrichtigungsService implements DatenauskunftBeitrag {
 
     /** Läuft im Hintergrund, damit der Senior nicht auf das Verschicken warten muss. */
     @Async
-    public void sende(Collection<UUID> kontoIds, String titel, String text) {
+    public void sende(Collection<UUID> kontoIds, String titelDeutsch, String vorspann, String textDeutsch) {
         for (UUID kontoId : kontoIds) {
             try {
+                // Jeder bekommt die Nachricht in der Sprache, in der er die App benutzt
+                Sprache sprache = konten.spracheVon(kontoId);
+                String titel = texte.in(sprache, titelDeutsch);
+                String text = vorspann + texte.in(sprache, textDeutsch);
                 boolean angekommen = sendePush(kontoId, titel, text);
                 if (!angekommen) {
-                    sendeMail(kontoId, titel, text);
+                    sendeMail(kontoId, titel, text, sprache);
                 }
             } catch (RuntimeException e) {
                 LOG.warn("Benachrichtigung fehlgeschlagen: {}", e.getClass().getSimpleName());
@@ -95,7 +103,7 @@ public class BenachrichtigungsService implements DatenauskunftBeitrag {
         return angekommen;
     }
 
-    private void sendeMail(UUID kontoId, String titel, String text) {
+    private void sendeMail(UUID kontoId, String titel, String text, Sprache sprache) {
         JavaMailSender sender = mail.getIfAvailable();
         if (sender == null || !einstellungen.mail().eingerichtet()) {
             return;
