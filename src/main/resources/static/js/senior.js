@@ -1,7 +1,7 @@
 // Die Bildschirme für Senioren: pro Bildschirm eine Aufgabe, große Schaltflächen, einfache Sprache.
 
 import {
-  ansicht, api, erkanntePlattform, fehlerbox, h, ladeIch, merkzettel, stelleGeraetSicher, zeige, zeigeLaden, zustand,
+  ansicht, api, app, erkanntePlattform, fehlerbox, h, ladeIch, merkzettel, stelleGeraetSicher, zeige, zeigeLaden, zustand,
 } from './basis.js';
 import { t } from './sprache.js';
 
@@ -334,13 +334,35 @@ export async function anleitung(id, schrittNummer) {
     h('div', { class: 'schritt-text' },
       schrittBild(schritt.bildPfad, 'schritt-bild'),
       h('p', {}, schritt.text)),
-    letzter
-      ? h('a', { class: 'knopf', href: '#/' }, t('allgemein.fertig'))
-      : h('a', { class: 'knopf', href: `#/anleitung/${id}/${nummer + 1}` }, t('anleitung.weiter')),
-    nummer > 1 && h('a', { class: 'knopf knopf-zweit', href: `#/anleitung/${id}/${nummer - 1}` },
-      t('anleitung.zurueck')),
+    // Die Leiste mit "Weiter" klebt unten am Bildschirm. So ist der Knopf immer zu sehen,
+    // auch auf kleinen Handys und bei langen Texten. Niemand muss dafür scrollen.
+    h('div', { class: 'schritt-leiste' },
+      nummer > 1 && h('a', { class: 'knopf knopf-zweit', href: `#/anleitung/${id}/${nummer - 1}` },
+        t('allgemein.zurueck')),
+      letzter
+        ? h('a', { class: 'knopf', href: '#/' }, t('allgemein.fertig'))
+        : h('a', { class: 'knopf', href: `#/anleitung/${id}/${nummer + 1}` }, t('anleitung.weiter'))),
     !daten.geprueftAm && daten.quelle === 'SYSTEM' && h('p', { class: 'leise' }, t('anleitung.beispiel')),
   ], zurSuche);
+  // Kennzeichnung für die Gestaltung: In dieser Ansicht ist alles etwas kompakter
+  app.classList.add('schritt-ansicht');
+  document.body.classList.add('schritt-modus');
+  passeSchrittAn();
+}
+
+/**
+ * Der Text eines Schritts ist wichtiger als das Bild. Verdeckt die Leiste mit "Weiter" einen Teil
+ * des Textes, wird zuerst das Bild kleiner. Reicht das nicht, verschwindet das Bild.
+ * So muss auf kleinen Handys möglichst niemand scrollen, um den Schritt zu lesen.
+ */
+function passeSchrittAn() {
+  const text = app.querySelector('.schritt-text');
+  const leiste = app.querySelector('.schritt-leiste');
+  if (!text || !leiste) return;
+  const verdeckt = () => text.getBoundingClientRect().bottom > leiste.getBoundingClientRect().top;
+  text.classList.remove('bild-klein', 'ohne-bild');
+  if (verdeckt()) text.classList.add('bild-klein');
+  if (verdeckt()) text.classList.replace('bild-klein', 'ohne-bild');
 }
 
 // ---------- "Familie fragen" ----------

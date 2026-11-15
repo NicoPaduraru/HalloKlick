@@ -369,9 +369,8 @@ ul.merkmale li {
   background: var(--flaeche);
   border: 1px solid #cfcfcf;
   border-radius: 12px;
-  padding: 1.25rem 1rem;
-  margin: 0 0 1rem;
-  min-height: 9rem;
+  padding: 1rem;
+  margin: 0 0 0.75rem;
 }
 
 .liste {
@@ -515,9 +514,9 @@ button.sprach-knopf.gewaehlt {
 
 .schritt-bild {
   display: block;
-  width: 9rem;
-  height: 9rem;
-  margin: 0 auto 1rem;
+  width: 6rem;
+  height: 6rem;
+  margin: 0 auto 0.75rem;
 }
 
 .knopf-mit-bild {
@@ -570,4 +569,100 @@ h3 {
 /* Fester Rat bei "keine Warnzeichen" */
 .tippbox {
   font-weight: 700;
+}
+
+/*
+ * Anleitung: Die Leiste mit "Weiter" klebt unten am Bildschirm (position: sticky).
+ * Viele Senioren scrollen nicht von selbst. Darum darf der wichtigste Knopf nie
+ * unter dem Bildschirmrand verschwinden, egal wie hoch der Bildschirm ist.
+ */
+.schritt-leiste {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  gap: 0.75rem;
+  margin: 0 -1rem 0.5rem;
+  padding: 0.6rem 1rem calc(0.6rem + env(safe-area-inset-bottom, 0px));
+  background: var(--grund);
+  border-top: 1px solid #cfcfcf;
+}
+
+.schritt-leiste .knopf {
+  margin: 0;
+  flex: 2;
+}
+
+.schritt-leiste .knopf-zweit {
+  flex: 1;
+}
+
+/* Die Leiste soll so wenig Höhe wie möglich wegnehmen: Text bleibt in einer Zeile */
+.schritt-leiste .knopf {
+  white-space: nowrap;
+  min-height: 60px;
+  padding: 0.5rem 0.6rem;
+}
+
+/* In der Schritt-Ansicht zählt jeder Bildpunkt Höhe: Überschrift und Text etwas kleiner */
+.schritt-ansicht h1 {
+  font-size: 1.35rem;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.schritt-ansicht .schritt-text {
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+.schritt-ansicht .schritt-bild {
+  width: 5.5rem;
+  height: 5.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.schritt-ansicht .zurueck {
+  min-height: 48px;
+  margin-bottom: 0.25rem;
+}
+
+/* Reicht der Platz nicht, wird das Bild kleiner oder verschwindet (siehe passeSchrittAn in senior.js) */
+.schritt-ansicht .schritt-text.bild-klein .schritt-bild {
+  width: 3.25rem;
+  height: 3.25rem;
+  margin-bottom: 0.35rem;
+}
+
+.schritt-ansicht .schritt-text.ohne-bild .schritt-bild {
+  display: none;
+}
+
+.schritt-ansicht .schritt-text {
+  padding: 0.75rem 0.9rem;
+}
+
+/*
+ * Niedrige Bildschirme (kleine Handys, oder wenn die Browserleiste viel Platz nimmt):
+ * In der Schritt-Ansicht verschwindet die Sprachleiste. Die Sprache lässt sich auf jeder
+ * anderen Seite ändern. So bleibt Platz für Bild und Text, ohne dass jemand scrollen muss.
+ */
+@media (max-height: 720px) {
+  body.schritt-modus .sprachen {
+    display: none;
+  }
+
+  body.schritt-modus .kopf {
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+  }
+
+  .schritt-ansicht h1 {
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .schritt-ansicht .schritt-zaehler {
+    margin-bottom: 0.15rem;
+    font-size: 0.9rem;
+  }
 }

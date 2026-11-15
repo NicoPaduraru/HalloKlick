@@ -2,7 +2,7 @@
 // Verbindungen bereit und zeigt Benachrichtigungen (Web Push) an.
 //
 // Bei jeder Änderung an den Dateien der Oberfläche die Versionsnummer erhöhen.
-const VERSION = 'halloklick-v5';
+const VERSION = 'halloklick-v9';
 
 // Hier liegt kurz, was jemand an HalloKlick geteilt hat, bis die App es abholt.
 const GETEILT = 'halloklick-geteilt';

@@ -164,9 +164,12 @@ Eine neue Sprache hinzufügen:
 `SprachenTest` prüft, dass in jeder Sprache dieselben Texte übersetzt sind und jede Sprache gleich viele
 Anleitungen hat.
 
-**Grenze:** Die Regel-Prüfung des Sicherheitschecks kennt nur deutsche Warnwörter. Nachrichten auf Englisch
-oder Italienisch erkennt sie schlechter (nachgemachte Internetadressen findet sie trotzdem). Impressum und
-Datenschutz gibt es nur auf Deutsch.
+Die Regel-Prüfung des Sicherheitschecks kennt Warnwörter auf Deutsch, Englisch und Italienisch. Sie erkennt
+die Sprache nicht vorher, sondern prüft immer alle drei.
+
+**Grenze:** Die englischen und italienischen Regeln sind an nachgebildeten Nachrichten entstanden und
+weniger erprobt als die deutschen. Für jede weitere Sprache der App braucht es eigene Regeln, sonst hilft dort
+nur die KI. Impressum und Datenschutz gibt es nur auf Deutsch.
 
 ### Bilder in den Anleitungen
 
@@ -188,7 +191,7 @@ Datenbank, eine Vorlage für die Einstellungen und das Backup-Skript. Die Anleit
 - Impressum, Datenschutzerklärung, Verträge zur Auftragsverarbeitung, Prüfung durch eine fachkundige Stelle.
 - Ein Server in Deutschland mit Domain, eingerichtetem Backup und Uptime-Alarm.
 - Die Claude-Anbindung und Web Push sind geschrieben, aber noch nicht gegen die echten Dienste erprobt.
-- Regel-Prüfung für englische und italienische Betrugsnachrichten.
+- Englische und italienische Regeln mit echten Betrugsnachrichten nachschärfen.
 - Die englischen und italienischen Texte von Muttersprachlern prüfen lassen.
 - Weitere Angehörige zu einer bestehenden Familie hinzufügen (heute gibt es pro Familie einen Angehörigen).
 

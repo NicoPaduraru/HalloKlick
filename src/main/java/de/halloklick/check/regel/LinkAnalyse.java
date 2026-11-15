@@ -28,7 +28,7 @@ final class LinkAnalyse {
     private static final String ENDUNGEN = "de|com|net|org|info|eu|at|ch|io|ly|cc|co|gy|gd|ru|cn|biz|app|dev|"
             + "xyz|top|click|link|online|site|shop|store|live|vip|icu|cfd|sbs|tk|ml|ga|cf|gq|page|support|help|"
             + "services|service|center|club|work|world|today|email|bond|buzz|monster|rest|quest|cyou|lol|pw|ws|"
-            + "uk|fr|nl|pl|tv|su";
+            + "uk|fr|nl|pl|tv|su|it";
 
     private static final Pattern LINK = Pattern.compile(
             "(?<![a-z0-9@._-])(?:(?:https?://|www\\.)[^\\s<>\"']+"
@@ -54,7 +54,10 @@ final class LinkAnalyse {
             "ups.com", "gls-pakete.de", "gls-group.com", "fedex.com",
             "amazon.de", "amazon.com", "ebay.de", "kleinanzeigen.de", "netflix.com", "apple.com",
             "microsoft.com", "google.com", "google.de", "whatsapp.com", "telekom.de", "vodafone.de",
-            "o2online.de", "elster.de", "zoll.de", "bund.de");
+            "o2online.de", "elster.de", "zoll.de", "bund.de",
+            // Italien
+            "poste.it", "intesasanpaolo.com", "unicredit.it", "inps.it", "gov.it", "amazon.it", "ebay.it",
+            "brt.it", "sda.it", "dhl.it", "paypal.it", "tim.it", "enel.it");
 
     /**
      * Bekannte Namen, die Betrüger gern in ihre Adressen einbauen.
@@ -72,14 +75,22 @@ final class LinkAnalyse {
             Map.entry("telekom", false), Map.entry("vodafone", false), Map.entry("netflix", false),
             Map.entry("apple", false), Map.entry("icloud", false), Map.entry("microsoft", false),
             Map.entry("whatsapp", false), Map.entry("ebay", false), Map.entry("kleinanzeigen", false),
-            Map.entry("ing", false), Map.entry("dkb", false), Map.entry("n26", false));
+            Map.entry("ing", false), Map.entry("dkb", false), Map.entry("n26", false),
+            // Italien
+            Map.entry("poste", false), Map.entry("posteitaliane", false), Map.entry("postepay", false),
+            Map.entry("bancoposta", false), Map.entry("intesa", false), Map.entry("intesasanpaolo", false),
+            Map.entry("unicredit", false), Map.entry("inps", false), Map.entry("agenziaentrate", false),
+            Map.entry("banca", true));
 
     private static final Set<String> VERDAECHTIGE_WOERTER = Set.of(
             "sicherheit", "secure", "security", "sicher", "login", "anmelden", "anmeldung", "verify",
             "verifizierung", "bestaetigung", "bestaetigen", "konto", "account", "update", "aktualisierung",
             "service", "support", "kunden", "kundenservice", "kundencenter", "online", "banking", "id",
             "auth", "check", "paket", "zustellung", "sendung", "tracking", "verfolgung", "lieferung",
-            "gebuehr", "zahlung", "payment", "pay", "hilfe", "help", "info", "portal", "web", "app", "de");
+            "gebuehr", "zahlung", "payment", "pay", "hilfe", "help", "info", "portal", "web", "app", "de",
+            // Italienisch
+            "sicurezza", "sicuro", "accesso", "accedi", "verifica", "conferma", "conto", "aggiornamento",
+            "assistenza", "clienti", "servizio", "pacco", "consegna", "spedizione", "pagamento", "it");
 
     private LinkAnalyse() {
     }
@@ -90,7 +101,9 @@ final class LinkAnalyse {
         Matcher treffer = LINK.matcher(kleinText);
         while (treffer.find()) {
             String host = host(treffer.group());
-            if (!host.isEmpty()) {
+            // "it" ist auch ein englisches Wort. Ein fehlendes Leerzeichen ("do it.It is") ist kein Link.
+            boolean nurEinWort = host.matches("[a-z]{1,2}\\.it") && !treffer.group().startsWith("http");
+            if (!host.isEmpty() && !nurEinWort) {
                 links.add(new Link(host, bewerte(host)));
             }
         }
@@ -180,7 +193,7 @@ final class LinkAnalyse {
         boolean zifferntrick = !entziffert.equals(host);
         List<String> woerter = List.of(host.split("[.-]"));
         List<String> entzifferteWoerter = List.of(entziffert.split("[.-]"));
-        boolean seltsameEndung = !Set.of("de", "com").contains(endung);
+        boolean seltsameEndung = !Set.of("de", "com", "it").contains(endung);
         boolean verdaechtigesWort = woerter.stream().limit(woerter.size() - 1L)
                 .anyMatch(VERDAECHTIGE_WOERTER::contains);
 

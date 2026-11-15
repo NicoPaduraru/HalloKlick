@@ -32,3 +32,19 @@ Reminder: your dentist appointment is on Tuesday at 9:30. Please bring your insu
 Die Telekom-Rechnung ist diesen Monat niedriger als sonst, schau mal in die App.
 ---
 Papa, die Bank hat wegen des neuen Kontos einen Brief geschickt, ich bringe ihn dir morgen mit.
+---
+Ciao mamma, siamo arrivati bene. L'albergo è bello. Ti chiamo stasera.
+---
+Il suo pacco verrà consegnato oggi tra le 10 e le 12. Grazie per il suo ordine.
+---
+Il tuo codice di verifica è 482913. Non condividerlo con nessuno.
+---
+Buon compleanno nonna! Veniamo a trovarti domenica.
+---
+Promemoria: la visita dal dentista è martedì alle 9:30. Porti la tessera sanitaria.
+---
+Ho ritirato i gioielli della nonna dal gioielliere, la collana è di nuovo intera.
+---
+Domani c'è il mercato, ti porto le uova e le patate?
+---
+Sono in coda in autostrada, arrivo subito. Cominciate pure senza di me.

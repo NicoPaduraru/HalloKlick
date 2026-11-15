@@ -31,6 +31,8 @@ export function ersetze(element, ...kinder) {
 
 /** Zeigt einen Bildschirm an: Zurück-Schaltfläche, Überschrift, Inhalt. */
 export function zeige(titel, inhalt, { zurueck = "#/", zurueckText = t("allgemein.zurueck") } = {}) {
+  app.classList.remove('schritt-ansicht');
+  document.body.classList.remove('schritt-modus');
   ersetze(app,
     zurueck ? h('a', { class: 'knopf knopf-zweit zurueck', href: zurueck }, '← ' + zurueckText) : null,
     titel ? h('h1', {}, titel) : null,
